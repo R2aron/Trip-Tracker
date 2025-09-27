@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Adaugă Trip</title>
+  <style>
+    :root { --gap: 12px; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background:#0f172a; color:#e2e8f0; }
+    .wrap { max-width: 980px; margin: 32px auto; padding: 24px; background:#111827; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+    h1 { margin: 0 0 4px; }
+    p.sub { margin: 0 0 20px; color:#94a3b8; }
+    fieldset { border: 1px solid #334155; border-radius: 10px; padding: 16px; margin-top: 16px; }
+    legend { padding: 0 8px; color:#a5b4fc; }
+    .grid { display: grid; gap: var(--gap); grid-template-columns: repeat(4, minmax(0,1fr)); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .grid-5 { grid-template-columns: repeat(5, minmax(0,1fr)); }
+    label { font-size: 13px; color:#cbd5e1; display:block; margin-bottom: 6px; }
+    input, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #334155; background:#0b1220; color:#e2e8f0; }
+    input[type="number"] { text-align: right; }
+    .row { display: contents; }
+    .btn { cursor: pointer; border: 1px solid #334155; background:#0b1220; color:#e2e8f0; padding: 10px 14px; border-radius: 10px; }
+    .btn:hover { background:#111827; }
+    .btn.primary { background:#4338ca; border-color:#4338ca; }
+    .btn.primary:hover { background:#3730a3; }
+    .btn.ghost { background:transparent; }
+    .actions { margin-top: 18px; display: flex; gap: 10px; justify-content: flex-end; }
+    .tbl { display:grid; gap: var(--gap); }
+    .tbl .hdr { color:#a3a3a3; font-size: 12px; }
+    .rm { text-align:center; }
+    .note { color:#94a3b8; font-size: 12px; margin-top: 6px; }
+    .ok { color:#22c55e; }
+    .err { color:#f97316; white-space: pre-wrap; }
+    .flex { display:flex; gap:10px; align-items:center; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Adaugă Trip</h1>
+  <p class="sub">Completează câmpurile și apasă <em>Salvează</em>. Se va face un <strong>POST</strong> cu JSON la endpoint-ul setat mai jos.</p>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div>
+      <label for="apiUrl">API URL (POST TripDTO)</label>
+      <input id="apiUrl" type="text" value="http://localhost:8080/api/trips" />
+      <div class="note">Modifică dacă endpoint-ul tău e altul.</div>
+    </div>
+    <div>
+      <label for="authToken">Authorization (opțional, Bearer ...)</label>
+      <input id="authToken" type="text" placeholder="Bearer eyJhbGciOi..." />
+      <div class="note">Lasă gol dacă nu ai Security activ.</div>
+    </div>
+  </div>
+
+  <!-- Trip basic -->
+  <fieldset>
+    <legend>Trip</legend>
+    <div class="grid">
+      <div>
+        <label for="name">Name</label>
+        <input id="name" type="text" placeholder="Ex: Trip to Paris" required />
+      </div>
+      <div>
+        <label for="destination">Destination</label>
+        <input id="destination" type="text" placeholder="Ex: France" required />
+      </div>
+      <div>
+        <label for="days">Days</label>
+        <input id="days" type="number" min="1" step="1" value="1" required />
+      </div>
+      <div>
+        <label for="startOfTrip">Start of Trip (LocalDateTime)</label>
+        <input id="startOfTrip" type="datetime-local" />
+        <div class="note">Se trimite ca ISO ex. <code>2025-09-25T09:00:00</code>.</div>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Itinerary Items -->
+  <fieldset>
+    <legend>Itinerary Items</legend>
+
+    <div class="tbl grid-5 hdr">
+      <div>Data</div><div>Ora</div><div>Location</div><div>Price</div><div class="rm">—</div>
+    </div>
+    <div id="itineraryRows" class="tbl"></div>
+    <div class="actions">
+      <button class="btn ghost" type="button" onclick="addItinerary()">+ Adaugă item</button>
+    </div>
+  </fieldset>
+
+  <!-- Accommodations -->
+  <fieldset>
+    <legend>Accommodations</legend>
+    <div class="tbl grid-5 hdr">
+      <div>Name</div><div>Location</div><div>Check-in</div><div>Check-out</div><div>Price</div>
+    </div>
+    <div id="accRows" class="tbl"></div>
+    <div class="note">Adresă (address) se capturează sub fiecare rând.</div>
+    <div class="actions">
+      <button class="btn ghost" type="button" onclick="addAccommodation()">+ Adaugă accommodation</button>
+    </div>
+  </fieldset>
+
+  <!-- Transportations -->
+  <fieldset>
+    <legend>Transportations</legend>
+    <div class="tbl grid-5 hdr">
+      <div>Category</div><div>Route</div><div>Distance</div><div>Price</div><div class="rm">—</div>
+    </div>
+    <div id="transRows" class="tbl"></div>
+    <div class="note">Completează <em>category</em> exact ca în enum-ul tău (ex: BUS, TRAIN, FLIGHT, TAXI).</div>
+    <div class="actions">
+      <button class="btn ghost" type="button" onclick="addTransportation()">+ Adaugă transport</button>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button class="btn" type="button" onclick="resetAll()">Reset</button>
+    <button class="btn primary" type="button" onclick="submitTrip()">Salvează</button>
+  </div>
+
+  <div id="result" class="note" style="margin-top:16px;"></div>
+</div>
+
+<script>
+  // Helpers
+  function isoFromDateTimeLocal(v) {
+    if (!v) return null;
+    // browser gives 'YYYY-MM-DDTHH:MM'
+    return v.length === 16 ? v + ":00" : v;
+  }
+  function numberOrNull(v) {
+    if (v === "" || v == null) return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+  function el(tag, attrs = {}, children = []) {
+    const e = document.createElement(tag);
+    Object.entries(attrs).forEach(([k,v]) => {
+      if (k === "class") e.className = v;
+      else if (k === "text") e.textContent = v;
+      else e.setAttribute(k, v);
+    });
+    children.forEach(c => e.appendChild(c));
+    return e;
+  }
+
+  // Itinerary rows
+  function addItinerary(values = {}) {
+    const row = el("div", { class: "grid-5 row" });
+    row.innerHTML = `
+      <div><input type="date" value="${values.date ?? ""}" /></div>
+      <div><input type="time" value="${values.time ?? ""}" /></div>
+      <div><input type="text" placeholder="Ex: Eiffel Tower" value="${values.location ?? ""}" /></div>
+      <div><input type="number" step="0.01" placeholder="0.00" value="${values.price ?? ""}" /></div>
+      <div class="rm"><button class="btn" type="button">✕</button></div>
+    `;
+    row.querySelector("button").onclick = () => row.remove();
+    document.getElementById("itineraryRows").appendChild(row);
+  }
+
+  // Accommodation rows
+  function addAccommodation(values = {}) {
+    const wrap = el("div");
+    const row = el("div", { class: "grid-5 row" });
+    row.innerHTML = `
+      <div><input type="text" placeholder="Hotel Name" value="${values.name ?? ""}" /></div>
+      <div><input type="text" placeholder="City/Area" value="${values.location ?? ""}" /></div>
+      <div><input type="datetime-local" value="${values.checkIn ?? ""}" /></div>
+      <div><input type="datetime-local" value="${values.checkOut ?? ""}" /></div>
+      <div><input type="number" step="0.01" placeholder="0.00" value="${values.price ?? ""}" /></div>
+    `;
+    const addr = el("div", { class: "grid-1", style: "margin:8px 0 12px" });
+    addr.innerHTML = `
+      <label>Address</label>
+      <input type="text" placeholder="Street, no., zip..." value="${values.address ?? ""}" />
+    `;
+    const rm = el("div", { class: "actions" }, [
+      el("button", { class: "btn", type: "button" }, [document.createTextNode("✕ Remove")])
+    ]);
+    rm.firstChild.onclick = () => wrap.remove();
+
+    wrap.appendChild(row);
+    wrap.appendChild(addr);
+    wrap.appendChild(rm);
+    document.getElementById("accRows").appendChild(wrap);
+  }
+
+  // Transportation rows
+  function addTransportation(values = {}) {
+    const row = el("div", { class: "grid-5 row" });
+    row.innerHTML = `
+      <div>
+        <select>
+          <option value="">—</option>
+          <option value="BUS">BUS</option>
+          <option value="TRAIN">TRAIN</option>
+          <option value="FLIGHT">FLIGHT</option>
+          <option value="TAXI">TAXI</option>
+        </select>
+      </div>
+      <div><input type="text" placeholder="Ex: CDG → Center" value="${values.route ?? ""}" /></div>
+      <div><input type="number" step="0.01" placeholder="km" value="${values.distance ?? ""}" /></div>
+      <div><input type="number" step="0.01" placeholder="0.00" value="${values.price ?? ""}" /></div>
+      <div class="rm"><button class="btn" type="button">✕</button></div>
+    `;
+    if (values.category) row.querySelector("select").value = values.category;
+    row.querySelector("button").onclick = () => row.remove();
+    document.getElementById("transRows").appendChild(row);
+  }
+
+  // Collect & POST
+  async function submitTrip() {
+    const result = document.getElementById("result");
+    result.textContent = "";
+
+    const name = document.getElementById("name").value.trim();
+    const destination = document.getElementById("destination").value.trim();
+    const days = parseInt(document.getElementById("days").value, 10) || 0;
+    const startOfTrip = isoFromDateTimeLocal(document.getElementById("startOfTrip").value);
+
+    if (!name || !destination || days <= 0) {
+      result.innerHTML = '<span class="err">Completează name, destination și days &gt; 0.</span>';
+      return;
+    }
+
+    // Itinerary
+    const itineraryItems = Array.from(document.querySelectorAll("#itineraryRows .row")).map(r => {
+      const [d,t,loc,price] = r.querySelectorAll("input");
+      return {
+        date: d.value || null,         // LocalDate
+        time: t.value || null,         // LocalTime
+        location: loc.value || null,
+        price: numberOrNull(price.value)
+      };
+    }).filter(x => x.date || x.time || x.location || x.price != null);
+
+    // Accommodations
+    const accWraps = Array.from(document.querySelectorAll("#accRows > div"));
+    const accommodations = accWraps.map(w => {
+      const inputs = w.querySelectorAll("input, input[type='datetime-local']");
+      const [name, location, ci, co, price, address] = inputs;
+      return {
+        name: name.value || null,
+        location: location.value || null,
+        checkIn: isoFromDateTimeLocal(ci.value),
+        checkOut: isoFromDateTimeLocal(co.value),
+        price: numberOrNull(price.value),
+        address: address.value || null
+      };
+    }).filter(a => a.name || a.location || a.checkIn || a.checkOut || a.price != null || a.address);
+
+    // Transportations
+    const transportations = Array.from(document.querySelectorAll("#transRows .row")).map(r => {
+      const sel = r.querySelector("select");
+      const [route, distance, price] = r.querySelectorAll("input");
+      return {
+        category: sel.value || null,   // string enum
+        route: route.value || null,
+        distance: numberOrNull(distance.value),
+        price: numberOrNull(price.value)
+      };
+    }).filter(t => t.category || t.route || t.distance != null || t.price != null);
+
+    const payload = {
+      // id nu se trimite la create
+      name, destination, days, startOfTrip,
+      itineraryItems,
+      accommodations,
+      transportations
+    };
+
+    const url = document.getElementById("apiUrl").value.trim();
+    const token = document.getElementById("authToken").value.trim();
+
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { "Authorization": token } : {})
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const text = await res.text();
+      if (res.ok) {
+        result.innerHTML = `<span class="ok">Creat cu succes (status ${res.status}).</span> Răspuns: ${text || '(fără body)'}`;
+      } else {
+        result.innerHTML = `<span class="err">Eroare (status ${res.status}).</span>\n${text}`;
+      }
+    } catch (e) {
+      result.innerHTML = `<span class="err">Request eșuat: ${e}</span>`;
+    }
+  }
+
+  function resetAll() {
+    document.getElementById("name").value = "";
+    document.getElementById("destination").value = "";
+    document.getElementById("days").value = 1;
+    document.getElementById("startOfTrip").value = "";
+    document.getElementById("itineraryRows").innerHTML = "";
+    document.getElementById("accRows").innerHTML = "";
+    document.getElementById("transRows").innerHTML = "";
+    document.getElementById("result").textContent = "";
+  }
+
+  // start with one empty line in each section (optional)
+  addItinerary();
+  addAccommodation();
+  addTransportation();
+</script>
+</body>
+</html>

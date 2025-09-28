@@ -1,5 +1,7 @@
 package com.example.TripTrack.entities;
 
+import com.example.TripTrack.dto.TransportationDTO;
+import com.example.TripTrack.enums.TransportationTypes;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,4 +32,12 @@ public class Transportation {
     @JoinColumn(name = "trip_id")
     @JsonBackReference
     private Trip parentTrip;
+
+    public Transportation(TransportationDTO dto) {
+        this.id = dto.getId();
+        this.category = dto.getCategory();
+        this.route = dto.getRoute();
+        this.distance = dto.getDistance();
+        this.price = dto.getPrice();
+    }
 }

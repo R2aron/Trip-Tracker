@@ -1,10 +1,16 @@
 package com.example.TripTrack.services;
 
+import com.example.TripTrack.dto.AccommodationDTO;
+import com.example.TripTrack.dto.ItineraryDTO;
+import com.example.TripTrack.dto.TransportationDTO;
 import com.example.TripTrack.dto.TripDTO;
 import com.example.TripTrack.entities.Accommodation;
 import com.example.TripTrack.entities.ItineraryItem;
 import com.example.TripTrack.entities.Transportation;
 import com.example.TripTrack.entities.Trip;
+import com.example.TripTrack.mappers.AccomodationMapper;
+import com.example.TripTrack.mappers.ItineraryItemMapper;
+import com.example.TripTrack.mappers.TransportationMapper;
 import com.example.TripTrack.repositories.ItineraryRepository;
 import com.example.TripTrack.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,65 +81,77 @@ public class TripService {
 
     }//revizuire
 
+//https://chatgpt.com/share/68d93c80-0d9c-8001-936f-748a4a641020
+
     public TripDTO toDto(Trip trip)
     {
         TripDTO dto = new TripDTO();
-        dto.setId(trip.getId());
-        dto.setName(trip.getName());
-        dto.setDestination(trip.getDestination());
-        dto.setDays(trip.getDays());
-        dto.setStartOfTrip(trip.getStartOfTrip());
+        dto.dtoSetter(trip);
+//        dto.setId(trip.getId());
+//        dto.setName(trip.getName());
+//        dto.setDestination(trip.getDestination());
+//        dto.setDays(trip.getDays());
+//        dto.setStartOfTrip(trip.getStartOfTrip());
 
+        //cred ca ar trebui sa fac metode in services pentru setarea acestor liste de DTOs.
         if(trip.getItineraryItems() != null && !trip.getItineraryItems().isEmpty())
-            dto.setItineraryItems(trip.getItineraryItems());
+        {
+//            List<ItineraryDTO> itineraryDTOList = trip.getItineraryItems().stream()
+//                    .map(itineraryItem -> {
+//                ItineraryDTO itin = new ItineraryDTO(itineraryItem);// mai scurt cu constructor
+//                return itin;
+//            }).collect(Collectors.toList());
+//            dto.setItineraryDTOS(itineraryDTOList);
+            List<ItineraryDTO> dtoList = ItineraryItemMapper.toDto(trip.getItineraryItems());
+            dto.setItineraryDTOS(dtoList);
+        }
+//            dto.setItineraryDTOS(trip.getItineraryItems());
 
-        if(trip.getTransportation() != null && !trip.getTransportation().isEmpty())
-            dto.setTransportations(trip.getTransportation());
+
+        if(trip.getTransportation() != null && !trip.getTransportation().isEmpty()) {
+            List<TransportationDTO> transportationDTOList = TransportationMapper.toDto(trip.getTransportation());
+            dto.setTransportationDTOS(transportationDTOList);
+        }
+//            dto.setTransportationDTOS(trip.getTransportation());
 
         if(trip.getAccommodations() != null && !trip.getAccommodations().isEmpty())
-            dto.setAccommodations(trip.getAccommodations());
+        {
+            List<AccommodationDTO> accommodationDTOList = AccomodationMapper.toDto(trip.getAccommodations());
+            dto.setAccommodationDTOS(accommodationDTOList);
+        }
+//            dto.setAccommodationDTOS(trip.getAccommodations());
 
         return dto;
     }
 
     public Trip createFromDto(TripDTO dto)
     {
-        Trip trip = new Trip();
-        trip.setDestination(dto.getDestination());
-        trip.setDays(dto.getDays());
-        trip.setName(dto.getName());
-        trip.setStartOfTrip(dto.getStartOfTrip());
+        Trip trip = new Trip(dto);
+//        trip.setDestination(dto.getDestination());
+//        trip.setDays(dto.getDays());
+//        trip.setName(dto.getName());
+//        trip.setStartOfTrip(dto.getStartOfTrip());
 
 
-        if(dto.getItineraryItems() != null && !dto.getItineraryItems().isEmpty())
+        if(dto.getItineraryDTOS() != null && !dto.getItineraryDTOS().isEmpty())
         {
             //de facut metoda
-            List<ItineraryItem> items = dto.getItineraryItems().stream()
+            List<ItineraryItem> items = dto.getItineraryDTOS().stream()
                     .filter(Objects::nonNull)
                     .map(itm -> {
-                        ItineraryItem newItem = new ItineraryItem();
-                        newItem.setLocation(itm.getLocation());
-                        newItem.setDate(itm.getDate());
-                        newItem.setTime(itm.getTime());
-                        newItem.setPrice(itm.getPrice());
-                        newItem.setParent(trip);
+                        ItineraryItem newItem = new ItineraryItem(itm);
+                        newItem.setParent(trip);//de verificat daca trebuie pus acest parent si in ItineraryDTO
                         return newItem;
                             }).collect(Collectors.toList());
             trip.setItineraryItems(items);
         }
 
-        if(dto.getAccommodations() != null && !dto.getAccommodations().isEmpty())
+        if(dto.getAccommodationDTOS() != null && !dto.getAccommodationDTOS().isEmpty())
         {
-            List<Accommodation> listToSave = dto.getAccommodations().stream()
+            List<Accommodation> listToSave = dto.getAccommodationDTOS().stream()
                     .filter(Objects::nonNull)
                     .map(booking -> {
-                        Accommodation toSave = new Accommodation();
-                        toSave.setName(booking.getName());
-                        toSave.setLocation(booking.getLocation());
-                        toSave.setCheckIn(booking.getCheckIn());
-                        toSave.setCheckOut(booking.getCheckOut());
-                        toSave.setPrice(booking.getPrice());
-                        toSave.setAddress(booking.getAddress());
+                        Accommodation toSave = new Accommodation(booking);
                         toSave.setParent(trip);
                         return  toSave;
                     }).collect(Collectors.toList());
@@ -141,16 +159,12 @@ public class TripService {
             trip.setAccommodations(listToSave);
         }
 
-        if(dto.getTransportations() != null && !dto.getTransportations().isEmpty())
+        if(dto.getTransportationDTOS() != null && !dto.getTransportationDTOS().isEmpty())
         {
-            List<Transportation> listOfTransports = dto.getTransportations().stream()
+            List<Transportation> listOfTransports = dto.getTransportationDTOS().stream()
                     .filter(Objects::nonNull)
                     .map(obj -> {
-                        Transportation transpToSave = new Transportation();
-                        transpToSave.setCategory(obj.getCategory());
-                        transpToSave.setRoute(obj.getRoute());
-                        transpToSave.setDistance(obj.getDistance());
-                        transpToSave.setPrice(obj.getPrice());
+                        Transportation transpToSave = new Transportation(obj);
                         transpToSave.setParentTrip(trip);
                         return transpToSave;
                     }).collect(Collectors.toList());

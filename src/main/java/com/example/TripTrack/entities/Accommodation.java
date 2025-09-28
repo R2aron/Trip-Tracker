@@ -1,5 +1,6 @@
 package com.example.TripTrack.entities;
 
+import com.example.TripTrack.dto.AccommodationDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,4 +35,12 @@ public class Accommodation {
     @JsonBackReference
     private Trip parent;
 
+    public Accommodation(AccommodationDTO dto) {
+        this.name = dto.getName();
+        this.location = dto.getLocation();
+        this.checkIn = dto.getCheckIn();
+        this.checkOut = dto.getCheckOut();
+        this.price = dto.getPrice();
+        this.address = dto.getAddress();
+    }
 }

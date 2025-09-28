@@ -39,7 +39,12 @@ public class Trip {
     @OneToMany(mappedBy = "parentTrip", cascade = CascadeType.ALL)
     private List<Transportation> transportation;
 
-//    public Trip(TripDTO dto) {
-//        this.name = dto.getName();
-//    }
+
+    public Trip(TripDTO dto) {
+        this.id = dto.getId();
+        this.name = dto.getName();
+        this.destination = dto.getDestination();
+        this.days = dto.getDays();
+        this.startOfTrip = dto.getStartOfTrip();
+    }
 }

@@ -17,4 +17,14 @@ public class AccomodationMapper {
                 }).collect(Collectors.toList());
         return accommodationDTOList;
     }
+
+    public static List<Accommodation> entityfromDto(List<AccommodationDTO> dtos)
+    {
+        List<Accommodation> accommodationList = dtos.stream()
+                .map(accom -> {
+                    Accommodation accommodation = new Accommodation(accom);
+                    return accommodation;
+                }).collect(Collectors.toList());
+        return accommodationList;
+    }
 }

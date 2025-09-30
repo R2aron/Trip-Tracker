@@ -1,6 +1,8 @@
 package com.example.TripTrack.mappers;
 
+import com.example.TripTrack.dto.AccommodationDTO;
 import com.example.TripTrack.dto.ItineraryDTO;
+import com.example.TripTrack.entities.Accommodation;
 import com.example.TripTrack.entities.ItineraryItem;
 
 import java.util.List;
@@ -22,5 +24,15 @@ public class  ItineraryItemMapper {
                 }).collect(Collectors.toList());
 
         return itineraryDTOList;
+    }
+
+    public static List<ItineraryItem> entityfromDto(List<ItineraryDTO> dtos)
+    {
+        List<ItineraryItem> itineraryItems = dtos.stream()
+                .map(itin -> {
+                    ItineraryItem itineraryItem = new ItineraryItem(itin);
+                    return itineraryItem;
+                }).collect(Collectors.toList());
+        return itineraryItems;
     }
 }

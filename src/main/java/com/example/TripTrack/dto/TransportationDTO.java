@@ -11,13 +11,13 @@ import java.util.UUID;
 public class TransportationDTO {
 
     private UUID id;//aici  am pus id. Trebuie sa verific dac merge bine cu id-ul pus automat
-    private Enum<com.example.TripTrack.enums.TransportationTypes> category;
+    private com.example.TripTrack.enums.TransportationTypes category;
     private String route;
     private Float distance;
     private  Float price;
 
 
-    public void createTransportationDto(Transportation transportation)
+    public TransportationDTO(Transportation transportation)
     {
         this.id = transportation.getId();
         this.route = transportation.getRoute();;

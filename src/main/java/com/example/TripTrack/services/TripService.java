@@ -17,10 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class TripService {
@@ -135,43 +133,50 @@ public class TripService {
 
         if(dto.getItineraryDTOS() != null && !dto.getItineraryDTOS().isEmpty())
         {
+            //de verificat daca trebuie pus acest parent si in ItineraryDTO
             //de facut metoda
-            List<ItineraryItem> items = dto.getItineraryDTOS().stream()
-                    .filter(Objects::nonNull)
-                    .map(itm -> {
-                        ItineraryItem newItem = new ItineraryItem(itm);
-                        newItem.setParent(trip);//de verificat daca trebuie pus acest parent si in ItineraryDTO
-                        return newItem;
-                            }).collect(Collectors.toList());
+
+//            List<ItineraryItem> items = dto.getItineraryDTOS().stream()
+//                    .filter(Objects::nonNull)
+//                    .map(itm -> {
+//                        ItineraryItem newItem = new ItineraryItem(itm);
+//                        newItem.setParent(trip);//de verificat daca trebuie pus acest parent si in ItineraryDTO
+//                        return newItem;
+//                            }).collect(Collectors.toList());
+//            trip.setItineraryItems(items);
+
+            List<ItineraryItem> items = ItineraryItemMapper.entityfromDto(dto.getItineraryDTOS());
             trip.setItineraryItems(items);
         }
 
         if(dto.getAccommodationDTOS() != null && !dto.getAccommodationDTOS().isEmpty())
         {
-            List<Accommodation> listToSave = dto.getAccommodationDTOS().stream()
-                    .filter(Objects::nonNull)
-                    .map(booking -> {
-                        Accommodation toSave = new Accommodation(booking);
-                        toSave.setParent(trip);
-                        return  toSave;
-                    }).collect(Collectors.toList());
-
-            trip.setAccommodations(listToSave);
+//            List<Accommodation> listToSave = dto.getAccommodationDTOS().stream()
+//                    .filter(Objects::nonNull)
+//                    .map(booking -> {
+//                        Accommodation toSave = new Accommodation(booking);
+//                        toSave.setParent(trip);
+//                        return  toSave;
+//                    }).collect(Collectors.toList());
+//            trip.setAccommodations(listToSave);
+            List<Accommodation> accommodationList = AccomodationMapper.entityfromDto(dto.getAccommodationDTOS());
+            trip.setAccommodations(accommodationList);
         }
 
         if(dto.getTransportationDTOS() != null && !dto.getTransportationDTOS().isEmpty())
         {
-            List<Transportation> listOfTransports = dto.getTransportationDTOS().stream()
-                    .filter(Objects::nonNull)
-                    .map(obj -> {
-                        Transportation transpToSave = new Transportation(obj);
-                        transpToSave.setParentTrip(trip);
-                        return transpToSave;
-                    }).collect(Collectors.toList());
-            trip.setTransportation(listOfTransports);
+//            List<Transportation> listOfTransports = dto.getTransportationDTOS().stream()
+//                    .filter(Objects::nonNull)
+//                    .map(obj -> {
+//                        Transportation transpToSave = new Transportation(obj);
+//                        transpToSave.setParentTrip(trip);
+//                        return transpToSave;
+//                    }).collect(Collectors.toList());
+//            trip.setTransportation(listOfTransports);
+
+            List<Transportation> transportationList = TransportationMapper.entityfromDto(dto.getTransportationDTOS());
+            trip.setTransportation(transportationList);
         }
-
-
         return tripRepository.save(trip);
     }
 }

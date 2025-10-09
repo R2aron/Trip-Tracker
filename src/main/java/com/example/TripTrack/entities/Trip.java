@@ -2,6 +2,9 @@ package com.example.TripTrack.entities;
 
 import com.example.TripTrack.dto.TripDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,8 +30,6 @@ public class Trip {
     private String destination;
     private int days;
     private LocalDateTime startOfTrip;
-
-
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<ItineraryItem> itineraryItems;

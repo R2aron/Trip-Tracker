@@ -31,7 +31,7 @@
       try {
         const res = await fetch("/api/trips", { headers: { "Accept": "application/json" }});
         if (!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();         // <- aici eșua dacă răspunsul nu era JSON
+        const data = await res.json();
         if (!Array.isArray(data)) throw new Error("Expected JSON array, got " + typeof data);
 
         if (data.length === 0) {

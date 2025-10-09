@@ -3,17 +3,30 @@ package com.example.TripTrack.dto;
 
 import com.example.TripTrack.entities.Transportation;
 import com.example.TripTrack.entities.Trip;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class TransportationDTO {
 
     private UUID id;//aici  am pus id. Trebuie sa verific dac merge bine cu id-ul pus automat
+    @NotNull(message = "Please chose one category")
     private com.example.TripTrack.enums.TransportationTypes category;
+    @NotNull
     private String route;
+    @NotNull
+    @Positive
     private Float distance;
+    @NotNull
     private  Float price;
 
 

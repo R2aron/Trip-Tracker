@@ -1,9 +1,6 @@
 package com.example.TripTrack.services;
 
-import com.example.TripTrack.dto.AccommodationDTO;
-import com.example.TripTrack.dto.ItineraryDTO;
-import com.example.TripTrack.dto.TransportationDTO;
-import com.example.TripTrack.dto.TripDTO;
+import com.example.TripTrack.dto.*;
 import com.example.TripTrack.entities.Accommodation;
 import com.example.TripTrack.entities.ItineraryItem;
 import com.example.TripTrack.entities.Transportation;
@@ -58,7 +55,6 @@ public class TripService {
         return tripRepository.findAllByDestination(destination);
     }
 
-    // treuie sa primeasca un tripDto, de modificat la liste
     public Trip update(Trip trip)
     {
         Trip toUpdate = tripRepository.findById(trip.getId())
@@ -83,8 +79,7 @@ public class TripService {
 
     public TripDTO toDto(Trip trip)
     {
-        TripDTO dto = new TripDTO();
-        dto.dtoSetter(trip);
+        TripDTO dto = new TripDTO(trip);
 //        dto.setId(trip.getId());
 //        dto.setName(trip.getName());
 //        dto.setDestination(trip.getDestination());
@@ -147,6 +142,7 @@ public class TripService {
 
             List<ItineraryItem> items = ItineraryItemMapper.entityfromDto(dto.getItineraryDTOS());
             trip.setItineraryItems(items);
+            trip.getItineraryItems().forEach(itineraryItem -> itineraryItem.setParent(trip));
         }
 
         if(dto.getAccommodationDTOS() != null && !dto.getAccommodationDTOS().isEmpty())
@@ -161,6 +157,8 @@ public class TripService {
 //            trip.setAccommodations(listToSave);
             List<Accommodation> accommodationList = AccomodationMapper.entityfromDto(dto.getAccommodationDTOS());
             trip.setAccommodations(accommodationList);
+            trip.getAccommodations().forEach(accommodation -> accommodation.setParent(trip));
+
         }
 
         if(dto.getTransportationDTOS() != null && !dto.getTransportationDTOS().isEmpty())
@@ -176,7 +174,24 @@ public class TripService {
 
             List<Transportation> transportationList = TransportationMapper.entityfromDto(dto.getTransportationDTOS());
             trip.setTransportation(transportationList);
+            trip.getTransportation().forEach(transportation -> transportation.setParentTrip(trip));
+
         }
         return tripRepository.save(trip);
     }
+
+    public LightResponseDTO createLightResponseDTO(Trip trip)
+    {
+        LightResponseDTO lightResponseDTO = new LightResponseDTO(trip);
+        return lightResponseDTO;
+    }
+
+//    public List<AccommodationDTO> getAllAccomodations(Accommodation accommodation)
+//    {
+//        List<AccommodationDTO> accommodationDTOList =
+//        return accommodationDTO
+//
+//    }// trebuie sa dezvolt infrastructura pentru accomodation : service , dto , etc.
+//    Fac get in controller -> apeleaza metoda din service( service accomodation) -> care apeleaza metoda de creare a dto-ului
+//    ok.
 }

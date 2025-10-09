@@ -1,7 +1,9 @@
 package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.ItineraryDTO;
+import com.example.TripTrack.entities.Accommodation;
 import com.example.TripTrack.entities.ItineraryItem;
+import com.example.TripTrack.mappers.ItineraryItemMapper;
 import com.example.TripTrack.repositories.ItineraryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,12 @@ public class ItineraryService {
     public void deleteById(UUID id)
     {
         itineraryRepository.deleteById(id);
+    }
+
+    public List<ItineraryDTO> getAllItinerary(List<ItineraryItem> itineraryItemList )
+    {
+        List<ItineraryDTO> itineraryDTOList = ItineraryItemMapper.toDto(itineraryItemList);
+        return itineraryDTOList;
     }
 
 //    public ItineraryDTO toDto(ItineraryItem itineraryItem)

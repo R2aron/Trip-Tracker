@@ -1,11 +1,12 @@
 package com.example.TripTrack.controllers;
 
-import com.example.TripTrack.dto.ItineraryDTO;
-import com.example.TripTrack.dto.TripDTO;
-import com.example.TripTrack.entities.ItineraryItem;
+import com.example.TripTrack.dto.*;
 import com.example.TripTrack.entities.Trip;
+import com.example.TripTrack.services.AccomodationService;
 import com.example.TripTrack.services.ItineraryService;
+import com.example.TripTrack.services.TransportationService;
 import com.example.TripTrack.services.TripService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,15 @@ public class TripController {
 
     @Autowired
     TripService tripService;
-
     @Autowired
     ItineraryService itineraryService;
+    @Autowired
+    AccomodationService accomodationService;
+    @Autowired
+    TransportationService transportationService;
 
     @PostMapping
-    public ResponseEntity<TripDTO> createTrip(@RequestBody TripDTO dto)
+    public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
     {
         Trip toSave = tripService.createFromDto(dto);
 
@@ -39,16 +43,27 @@ public class TripController {
         return ResponseEntity.ok(tripService.findAll().stream().map(tripService:: toDto).collect(Collectors.toList()));
     }
 
+    @GetMapping("/lightResponse")
+    public ResponseEntity<List<LightResponseDTO>> lightResponseTrips()
+    {
+        return ResponseEntity.ok(tripService.findAll().stream().map(tripService::createLightResponseDTO).collect(Collectors.toList()));
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<TripDTO> getTripById(@PathVariable UUID id)
+    public ResponseEntity<LightResponseDTO> getTripById(@PathVariable UUID id)
     {
         Optional<Trip> tripOptional = tripService.findById(id);
 
-        return tripOptional.map(trip -> ResponseEntity.ok(tripService.toDto(trip)))
+        return tripOptional.map(trip -> ResponseEntity.ok(tripService.createLightResponseDTO(trip)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
+    //de gandit cum sa aduc toate updaturile.
+    @PutMapping("/")
+    public ResponseEntity<AccommodationDTO> updateAccomodation(@RequestBody AccommodationDTO dto, @PathVariable UUID id)
+    {
+        return ResponseEntity.ok(accomodationService.update(dto,id));
+    }
 
     @PutMapping
     public ResponseEntity<TripDTO> updateTrip(@RequestBody TripDTO dto)
@@ -84,6 +99,35 @@ public class TripController {
         return ResponseEntity.ok(locationsDto);
     }
 
+    @GetMapping("/{id}/accomodation")
+    public ResponseEntity<List<AccommodationDTO>> getAccomodations(@PathVariable UUID id)
+    {
+        Trip trip = tripService.findById(id)
+                .orElseThrow( () -> new RuntimeException("Trip not found with id: " + id));
+        List<AccommodationDTO> accommodationDTOList = accomodationService.getAllAccomodations(trip.getAccommodations());
+
+        return ResponseEntity.ok(accommodationDTOList);
+    }
+
+    @GetMapping("/{id}/itinerary")
+    public ResponseEntity<List<ItineraryDTO>> getItinerary(@PathVariable UUID id)
+    {
+        Trip trip = tripService.findById(id)
+                .orElseThrow( () -> new RuntimeException("Trip not found with id: " + id));
+        List<ItineraryDTO> itineraryDTOList = itineraryService.getAllItinerary(trip.getItineraryItems());
+
+        return ResponseEntity.ok(itineraryDTOList);
+    }
+
+    @GetMapping("/{id}/transportation")
+    public ResponseEntity<List<TransportationDTO>> getTransportation(@PathVariable UUID id)
+    {
+        Trip trip = tripService.findById(id)
+                .orElseThrow( () -> new RuntimeException("Trip not found with id: " + id));
+        List<TransportationDTO> transportationDTOList = transportationService.getAllTransportation(trip.getTransportation());
+
+        return ResponseEntity.ok(transportationDTOList);
+    }
 //    ---------------------------------------------------------------------
 
 

@@ -1,36 +1,52 @@
 package com.example.TripTrack.dto;
 
-import com.example.TripTrack.entities.Accommodation;
-import com.example.TripTrack.entities.ItineraryItem;
-import com.example.TripTrack.entities.Transportation;
 import com.example.TripTrack.entities.Trip;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class TripDTO {
 
     private UUID id;
+    @NotBlank(message = "Trip name cannot be blank")
     private String name;
+    @NotNull
     private String destination;
-    private int days;
+    @NotNull
+    @Positive
+    private Integer days;
+    @NotNull
     private LocalDateTime startOfTrip;
 
-    //itinerary
-//    private List<ItineraryItem> itineraryItems;//trebuie sa fie dto-uri
-
+    @Valid
+    @NotEmpty
     private List<ItineraryDTO> itineraryDTOS;
     //Accommodation
 //    private List<Accommodation> accommodations;
+
+    @Valid
+    @NotNull
     private  List<AccommodationDTO> accommodationDTOS;
     //Transport
 //    private List<Transportation> transportations;
+
+    @Valid
+    @NotEmpty
     private List<TransportationDTO> transportationDTOS;
 
-    public void dtoSetter(Trip trip)
+    public TripDTO(Trip trip)
     {
         this.id = trip.getId();
         this.name = trip.getName();

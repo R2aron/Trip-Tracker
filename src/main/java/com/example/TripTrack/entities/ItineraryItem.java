@@ -27,7 +27,8 @@ public class ItineraryItem {
     private LocalDate date;
     private LocalTime time;
     private String location;
-    private float price;
+    private Float price;
+    private Boolean isVisited = false;
 
     @ManyToOne
     @JoinColumn(name = "trip_id")

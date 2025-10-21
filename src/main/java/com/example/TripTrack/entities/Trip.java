@@ -10,7 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -28,7 +30,7 @@ public class Trip {
     private UUID id;
     private String name;
     private String destination;
-    private int days;
+    private Integer days;
     private LocalDateTime startOfTrip;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
@@ -39,6 +41,9 @@ public class Trip {
 
     @OneToMany(mappedBy = "parentTrip", cascade = CascadeType.ALL)
     private List<Transportation> transportation;
+
+    @ManyToMany(mappedBy = "trips", fetch = FetchType.LAZY)
+    private Set<User> users = new HashSet<>();
 
 
     public Trip(TripDTO dto) {

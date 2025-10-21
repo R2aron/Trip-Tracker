@@ -52,27 +52,37 @@ public class TripController {
     @GetMapping("/{id}")
     public ResponseEntity<LightResponseDTO> getTripById(@PathVariable UUID id)
     {
-        Optional<Trip> tripOptional = tripService.findById(id);
+        Optional<Trip> tripOptional = tripService.findTripDtoById(id);
 
         return tripOptional.map(trip -> ResponseEntity.ok(tripService.createLightResponseDTO(trip)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     //de gandit cum sa aduc toate updaturile.
-    @PutMapping("/")
-    public ResponseEntity<AccommodationDTO> updateAccomodation(@RequestBody AccommodationDTO dto, @PathVariable UUID id)
+    @PutMapping("/updateAccomodation")
+    public ResponseEntity<AccommodationDTO> updateAccomodation(@RequestBody @Valid AccommodationDTO dto, @PathVariable UUID id)
     {
         return ResponseEntity.ok(accomodationService.update(dto,id));
     }
 
-    @PutMapping
-    public ResponseEntity<TripDTO> updateTrip(@RequestBody TripDTO dto)
+    @PutMapping("/updateTransportation")
+    public ResponseEntity<TransportationDTO> updateTransportation(@RequestBody @Valid TransportationDTO dto, @PathVariable UUID id)
     {
-        Trip toUpdate = tripService.createFromDto(dto);
-        Trip updatedTrip = tripService.update(toUpdate);
+        return ResponseEntity.ok(transportationService.update(dto,id));
+    }
 
-        return ResponseEntity.ok(tripService.toDto(updatedTrip));
+    @PutMapping("/updateItinerary")
+    public ResponseEntity<ItineraryDTO> updateItinerary(@RequestBody @Valid ItineraryDTO dto, @PathVariable UUID id)
+    {
+        return ResponseEntity.ok(itineraryService.update(dto,id));
+    }
+
+    @PutMapping
+    public ResponseEntity<TripDTO> updateTrip(@RequestBody @Valid  TripDTO dto, @PathVariable UUID id)
+    {
+        return  ResponseEntity.ok(tripService.update(dto,id));
     }//nu este bine facuta metodas // de refacut update : https://www.geeksforgeeks.org/java/spring-boot-crud-operations/
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTrip(@PathVariable UUID id)
@@ -90,11 +100,16 @@ public class TripController {
         return ResponseEntity.ok(tripsDTO);
     }// de vazut cum scot mesajul de eroare
 
+    @GetMapping("/findTripsLessThanXDays{days}")
+    public ResponseEntity<List<TripDTO>> getTripsLessThanDays(@PathVariable int days)
+    {
+        return ResponseEntity.ok(tripService.findByDaysLessThanEqual(days));
+    }
+
     @GetMapping("/findByLocation/{destination}")
     public ResponseEntity<List<TripDTO>> findByLocation(@PathVariable String destination)
     {
-        List<Trip> lLocations = tripService.findByDestination(destination)
-                .orElseThrow(() -> new RuntimeException("No trip with location: "+ destination));
+        List<Trip> lLocations = tripService.findByDestination(destination);
         List<TripDTO> locationsDto = lLocations.stream().map(tripService::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(locationsDto);
     }
@@ -102,7 +117,7 @@ public class TripController {
     @GetMapping("/{id}/accomodation")
     public ResponseEntity<List<AccommodationDTO>> getAccomodations(@PathVariable UUID id)
     {
-        Trip trip = tripService.findById(id)
+        Trip trip = tripService.findTripDtoById(id)
                 .orElseThrow( () -> new RuntimeException("Trip not found with id: " + id));
         List<AccommodationDTO> accommodationDTOList = accomodationService.getAllAccomodations(trip.getAccommodations());
 
@@ -112,7 +127,7 @@ public class TripController {
     @GetMapping("/{id}/itinerary")
     public ResponseEntity<List<ItineraryDTO>> getItinerary(@PathVariable UUID id)
     {
-        Trip trip = tripService.findById(id)
+        Trip trip = tripService.findTripDtoById(id)
                 .orElseThrow( () -> new RuntimeException("Trip not found with id: " + id));
         List<ItineraryDTO> itineraryDTOList = itineraryService.getAllItinerary(trip.getItineraryItems());
 
@@ -122,7 +137,7 @@ public class TripController {
     @GetMapping("/{id}/transportation")
     public ResponseEntity<List<TransportationDTO>> getTransportation(@PathVariable UUID id)
     {
-        Trip trip = tripService.findById(id)
+        Trip trip = tripService.findTripDtoById(id)
                 .orElseThrow( () -> new RuntimeException("Trip not found with id: " + id));
         List<TransportationDTO> transportationDTOList = transportationService.getAllTransportation(trip.getTransportation());
 

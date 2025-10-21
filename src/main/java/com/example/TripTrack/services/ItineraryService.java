@@ -1,46 +1,69 @@
 package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.ItineraryDTO;
-import com.example.TripTrack.entities.Accommodation;
 import com.example.TripTrack.entities.ItineraryItem;
 import com.example.TripTrack.mappers.ItineraryItemMapper;
 import com.example.TripTrack.repositories.ItineraryRepository;
+import com.example.TripTrack.services.ServiceInterfaces.InineraryServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class ItineraryService {
+public class ItineraryService implements InineraryServiceInterface {
     @Autowired
     ItineraryRepository itineraryRepository;
 
-    public List<ItineraryItem> findAll()
+    @Override
+    public List<ItineraryDTO> findAll()
     {
-        return itineraryRepository.findAll();
+        return ItineraryItemMapper.toDtoList(itineraryRepository.findAll());
     }
 
-    public Optional<ItineraryItem> findByID(UUID id)
+    @Override
+    public ItineraryDTO getItineraryDtoById(UUID id)
     {
-        return itineraryRepository.findById(id);
+        return new ItineraryDTO(itineraryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transportation not found")));
     }
 
-    public ItineraryItem save(ItineraryItem itineraryItem)
+    //metoda findById care returneaza o entitate
+
+    public ItineraryItem findItineraryById(UUID id)
     {
-        return itineraryRepository.save(itineraryItem);
+        return itineraryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transportation not found"));
     }
 
+    @Override
+    public ItineraryDTO save(ItineraryItem itineraryItem)
+    {
+        return new ItineraryDTO(itineraryRepository.save(itineraryItem));
+    }
+
+    @Override
     public void deleteById(UUID id)
     {
         itineraryRepository.deleteById(id);
     }
 
-    public List<ItineraryDTO> getAllItinerary(List<ItineraryItem> itineraryItemList )
+    @Override
+    public List<ItineraryDTO> getAllItinerary(List<ItineraryItem> itineraryItemList)
     {
-        List<ItineraryDTO> itineraryDTOList = ItineraryItemMapper.toDto(itineraryItemList);
+        List<ItineraryDTO> itineraryDTOList = ItineraryItemMapper.toDtoList(itineraryItemList);
         return itineraryDTOList;
+    }
+
+    @Override
+    public ItineraryDTO update(ItineraryDTO itineraryDTO, UUID id)
+    {
+        ItineraryItem entityToUpdate = findItineraryById(id);
+        ItineraryItem itineraryItem = ItineraryItemMapper.updateEntityFromDto(itineraryDTO,entityToUpdate);
+        itineraryRepository.save(itineraryItem);
+        ItineraryDTO itineraryDTO1 = new ItineraryDTO(itineraryItem);
+        return itineraryDTO1;
     }
 
 //    public ItineraryDTO toDto(ItineraryItem itineraryItem)

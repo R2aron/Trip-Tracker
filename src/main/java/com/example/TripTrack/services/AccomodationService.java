@@ -2,54 +2,69 @@ package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.AccommodationDTO;
 import com.example.TripTrack.entities.Accommodation;
-import com.example.TripTrack.mappers.AccomodationMapper;
+import com.example.TripTrack.mappers.AccommodationMapper;
 import com.example.TripTrack.repositories.AccommodationRepository;
+import com.example.TripTrack.services.ServiceInterfaces.AccomodationServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
-public class AccomodationService {
+public class AccomodationService implements AccomodationServiceInterface {
     @Autowired
     AccommodationRepository accommodationRepository;
-    @Autowired
-    AccomodationMapper accomodationMapper;
 
-    public List<Accommodation> findAll()
+    @Override
+    public List<AccommodationDTO> findAll()
     {
-        return accommodationRepository.findAll();
+        List<AccommodationDTO> accommodationDTOList = accommodationRepository.findAll().stream().map(AccommodationMapper::toDtoList).collect(Collectors.toList());
+        return accommodationDTOList;
     }
 
-    public Optional<Accommodation> findById(UUID id)
+    @Override
+    public AccommodationDTO getAccomodationDtoById(UUID id)
     {
-        return accommodationRepository.findById(id);
+        return new AccommodationDTO(accommodationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transportation not found")));
     }
 
-    public Accommodation save(Accommodation accommodation)
+    //metoda findById care returneaza o entitate
+
+    public Accommodation findAccomodationById(UUID id)
     {
-        return accommodationRepository.save(accommodation);
+        return accommodationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transportation not found"));
     }
 
+    @Override
+    public AccommodationDTO save(Accommodation accommodation)
+    {
+        AccommodationDTO accommodationDTO = accommodationRepository.save(accommodation);
+        return accommodationDTO;
+    }
+
+    @Override
     public void deleteById(UUID id)
     {
         accommodationRepository.deleteById(id);
     }
 
+    @Override
     public List<AccommodationDTO> getAllAccomodations(List<Accommodation> accommodationList)
     {
-        List<AccommodationDTO> accommodationDTOList = AccomodationMapper.toDto(accommodationList);
+        List<AccommodationDTO> accommodationDTOList = AccommodationMapper.toDtoList(accommodationList);
         return accommodationDTOList;
     }
 
-    public AccommodationDTO update(AccommodationDTO accommodationDTO, UUID entity)
+    @Override
+    public AccommodationDTO update(AccommodationDTO accommodationDTO, UUID id)
     {
-        Accommodation accommodation = accomodationMapper.updateEntityFromDto(accommodationDTO,entity);
+        Accommodation accommodationToUpdate = findAccomodationById(id);
+        Accommodation accommodation = AccommodationMapper.updateEntityFromDto(accommodationDTO,accommodationToUpdate);
         accommodationRepository.save(accommodation);
-        AccommodationDTO accommodationDTO1 = new AccommodationDTO(accommodation);
-        return accommodationDTO1
+        return new AccommodationDTO(accommodation);
     }
-}
 }

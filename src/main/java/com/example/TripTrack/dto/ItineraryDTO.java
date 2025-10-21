@@ -24,7 +24,9 @@ public class ItineraryDTO {
     @NotEmpty
     private String location;
     @NotNull
-    private float price;
+    private Float price;
+    @NotNull
+    private Boolean isVisited;
 
     public ItineraryDTO(ItineraryItem itineraryItem)
     {

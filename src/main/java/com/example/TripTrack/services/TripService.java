@@ -1,20 +1,14 @@
 package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.*;
-import com.example.TripTrack.entities.Accommodation;
-import com.example.TripTrack.entities.ItineraryItem;
-import com.example.TripTrack.entities.Transportation;
 import com.example.TripTrack.entities.Trip;
-import com.example.TripTrack.mappers.AccomodationMapper;
-import com.example.TripTrack.mappers.ItineraryItemMapper;
-import com.example.TripTrack.mappers.TransportationMapper;
+import com.example.TripTrack.mappers.TripMapper;
 import com.example.TripTrack.repositories.ItineraryRepository;
 import com.example.TripTrack.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,174 +18,74 @@ public class TripService {
     @Autowired
     ItineraryRepository itineraryRepository;
 
-    public List<Trip> findAll()
-    {
-        return tripRepository.findAll();
+
+    public List<TripDTO> findAll() {
+        return TripMapper.toDtoList(tripRepository.findAll());
     }
 
-    public Optional<Trip> findById(UUID id)
-    {
-        return tripRepository.findById(id);
+    public TripDTO findTripDtoById(UUID id) {
+        return new TripDTO(tripRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Trip not found")));
     }
 
-    public Trip save(Trip trip)
-    {
-        return tripRepository.save(trip);
+    public Trip getTripById(UUID id) {
+        return tripRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Trip not found"));
     }
 
-    public void deleteById(UUID id)
-    {
+    public TripDTO save(Trip trip) {
+        return new TripDTO(tripRepository.save(trip));
+    }
+
+    public void deleteById(UUID id) {
         tripRepository.deleteById(id);
     }
 
-    public Optional<List<Trip>> findByDaysGreaterThan(int numberOfDays)
-    {
-        return tripRepository.findByDaysGreaterThan(numberOfDays);
-
+    public List<TripDTO> findByDaysGreaterThan(int numberOfDays) {
+        return TripMapper.toDtoList(tripRepository.findByDaysGreaterThan(numberOfDays)
+                .orElseThrow(() -> new RuntimeException("No trips that long")));
     }
 
-    public Optional<List<Trip>> findByDestination(String destination)
-    {
-        return tripRepository.findAllByDestination(destination);
+    public List<TripDTO> findByDestination(String destination) {
+        return TripMapper.toDtoList(tripRepository.findAllByDestination(destination)
+                .orElseThrow(() -> new RuntimeException("No trip with this destination")));
     }
 
-    public Trip update(Trip trip)
-    {
-        Trip toUpdate = tripRepository.findById(trip.getId())
-                        .orElseThrow(() -> new RuntimeException("Trip not found"));
+    public List<TripDTO> findByDaysLessThanEqual(int days) {
+        return TripMapper.toDtoList(tripRepository.findByDaysLessThanEqual(days)
+                .orElseThrow(() -> new RuntimeException("No trip that short")));
+//        de returnat dto
+    }
 
-        toUpdate.setId(trip.getId());
-        toUpdate.setName(trip.getName());
-        toUpdate.setDestination(trip.getDestination());
-        toUpdate.setDays(trip.getDays());
-        toUpdate.setStartOfTrip(trip.getStartOfTrip());
+    public TripDTO update(TripDTO tripDTO, UUID id) {
 
-        toUpdate.setItineraryItems(trip.getItineraryItems());
-        toUpdate.setAccommodations(trip.getAccommodations());
-        toUpdate.setTransportation(trip.getTransportation());
+        Trip tripToUpdate = getTripById(id);
+        Trip tripUpdated = TripMapper.updateEntityFromDto(tripDTO,tripToUpdate);
+        return new TripDTO(tripRepository.save(tripUpdated));
 
-        return tripRepository.save(toUpdate);
 
+//        Trip toUpdate = tripRepository.findById(trip.getId())
+//                .orElseThrow(() -> new RuntimeException("Trip not found"));
+//
+//        toUpdate.setId(trip.getId());
+//        toUpdate.setName(trip.getName());
+//        toUpdate.setDestination(trip.getDestination());
+//        toUpdate.setDays(trip.getDays());
+//        toUpdate.setStartOfTrip(trip.getStartOfTrip());
+//
+//        toUpdate.setItineraryItems(trip.getItineraryItems());
+//        toUpdate.setAccommodations(trip.getAccommodations());
+//        toUpdate.setTransportation(trip.getTransportation());
+//
+//        return tripRepository.save(toUpdate);
+//
 
     }//revizuire
 
 //https://chatgpt.com/share/68d93c80-0d9c-8001-936f-748a4a641020
 
-    public TripDTO toDto(Trip trip)
-    {
-        TripDTO dto = new TripDTO(trip);
-//        dto.setId(trip.getId());
-//        dto.setName(trip.getName());
-//        dto.setDestination(trip.getDestination());
-//        dto.setDays(trip.getDays());
-//        dto.setStartOfTrip(trip.getStartOfTrip());
-
-        //cred ca ar trebui sa fac metode in services pentru setarea acestor liste de DTOs.
-        if(trip.getItineraryItems() != null && !trip.getItineraryItems().isEmpty())
-        {
-//            List<ItineraryDTO> itineraryDTOList = trip.getItineraryItems().stream()
-//                    .map(itineraryItem -> {
-//                ItineraryDTO itin = new ItineraryDTO(itineraryItem);// mai scurt cu constructor
-//                return itin;
-//            }).collect(Collectors.toList());
-//            dto.setItineraryDTOS(itineraryDTOList);
-            List<ItineraryDTO> dtoList = ItineraryItemMapper.toDto(trip.getItineraryItems());
-            dto.setItineraryDTOS(dtoList);
-        }
-//            dto.setItineraryDTOS(trip.getItineraryItems());
-
-
-        if(trip.getTransportation() != null && !trip.getTransportation().isEmpty()) {
-            List<TransportationDTO> transportationDTOList = TransportationMapper.toDto(trip.getTransportation());
-            dto.setTransportationDTOS(transportationDTOList);
-        }
-//            dto.setTransportationDTOS(trip.getTransportation());
-
-        if(trip.getAccommodations() != null && !trip.getAccommodations().isEmpty())
-        {
-            List<AccommodationDTO> accommodationDTOList = AccomodationMapper.toDto(trip.getAccommodations());
-            dto.setAccommodationDTOS(accommodationDTOList);
-        }
-//            dto.setAccommodationDTOS(trip.getAccommodations());
-
-        return dto;
-    }
-
-    public Trip createFromDto(TripDTO dto)
-    {
-        Trip trip = new Trip(dto);
-//        trip.setDestination(dto.getDestination());
-//        trip.setDays(dto.getDays());
-//        trip.setName(dto.getName());
-//        trip.setStartOfTrip(dto.getStartOfTrip());
-
-
-        if(dto.getItineraryDTOS() != null && !dto.getItineraryDTOS().isEmpty())
-        {
-            //de verificat daca trebuie pus acest parent si in ItineraryDTO
-            //de facut metoda
-
-//            List<ItineraryItem> items = dto.getItineraryDTOS().stream()
-//                    .filter(Objects::nonNull)
-//                    .map(itm -> {
-//                        ItineraryItem newItem = new ItineraryItem(itm);
-//                        newItem.setParent(trip);//de verificat daca trebuie pus acest parent si in ItineraryDTO
-//                        return newItem;
-//                            }).collect(Collectors.toList());
-//            trip.setItineraryItems(items);
-
-            List<ItineraryItem> items = ItineraryItemMapper.entityfromDto(dto.getItineraryDTOS());
-            trip.setItineraryItems(items);
-            trip.getItineraryItems().forEach(itineraryItem -> itineraryItem.setParent(trip));
-        }
-
-        if(dto.getAccommodationDTOS() != null && !dto.getAccommodationDTOS().isEmpty())
-        {
-//            List<Accommodation> listToSave = dto.getAccommodationDTOS().stream()
-//                    .filter(Objects::nonNull)
-//                    .map(booking -> {
-//                        Accommodation toSave = new Accommodation(booking);
-//                        toSave.setParent(trip);
-//                        return  toSave;
-//                    }).collect(Collectors.toList());
-//            trip.setAccommodations(listToSave);
-            List<Accommodation> accommodationList = AccomodationMapper.entityfromDto(dto.getAccommodationDTOS());
-            trip.setAccommodations(accommodationList);
-            trip.getAccommodations().forEach(accommodation -> accommodation.setParent(trip));
-
-        }
-
-        if(dto.getTransportationDTOS() != null && !dto.getTransportationDTOS().isEmpty())
-        {
-//            List<Transportation> listOfTransports = dto.getTransportationDTOS().stream()
-//                    .filter(Objects::nonNull)
-//                    .map(obj -> {
-//                        Transportation transpToSave = new Transportation(obj);
-//                        transpToSave.setParentTrip(trip);
-//                        return transpToSave;
-//                    }).collect(Collectors.toList());
-//            trip.setTransportation(listOfTransports);
-
-            List<Transportation> transportationList = TransportationMapper.entityfromDto(dto.getTransportationDTOS());
-            trip.setTransportation(transportationList);
-            trip.getTransportation().forEach(transportation -> transportation.setParentTrip(trip));
-
-        }
-        return tripRepository.save(trip);
-    }
-
-    public LightResponseDTO createLightResponseDTO(Trip trip)
-    {
-        LightResponseDTO lightResponseDTO = new LightResponseDTO(trip);
-        return lightResponseDTO;
-    }
-
-//    public List<AccommodationDTO> getAllAccomodations(Accommodation accommodation)
-//    {
-//        List<AccommodationDTO> accommodationDTOList =
-//        return accommodationDTO
-//
-//    }// trebuie sa dezvolt infrastructura pentru accomodation : service , dto , etc.
-//    Fac get in controller -> apeleaza metoda din service( service accomodation) -> care apeleaza metoda de creare a dto-ului
-//    ok.
 }
+
+
+
+

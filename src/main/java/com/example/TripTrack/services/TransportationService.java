@@ -1,37 +1,45 @@
 package com.example.TripTrack.services;
 
-import com.example.TripTrack.dto.AccommodationDTO;
 import com.example.TripTrack.dto.TransportationDTO;
-import com.example.TripTrack.entities.Accommodation;
 import com.example.TripTrack.entities.Transportation;
-import com.example.TripTrack.mappers.AccomodationMapper;
 import com.example.TripTrack.mappers.TransportationMapper;
 import com.example.TripTrack.repositories.TransportationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class TransportationService {
     @Autowired
     TransportationRepository transportationRepository;
+    @Autowired
+    TransportationMapper transportationMapper;
 
-    public List<Transportation> findAll()
+    public List<TransportationDTO> findAll()
     {
-        return transportationRepository.findAll();
+        return TransportationMapper.toDtoList(transportationRepository.findAll());
     }
 
-    public Optional<Transportation> findById(UUID id)
+    public TransportationDTO getTransportationDtoById(UUID id)
     {
-        return transportationRepository.findById(id);
+        return new TransportationDTO(transportationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transportation not found")));
     }
 
-    public Transportation save(Transportation transportation)
+    //metoda findById care returneaza o entitate
+
+    public Transportation findTransportationById(UUID id)
     {
-        return transportationRepository.save(transportation);
+        return transportationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transportation not found"));
+    }
+
+
+    public TransportationDTO save(Transportation transportation)
+    {
+        return new TransportationDTO(transportationRepository.save(transportation));
     }
 
     public void deleteById(UUID id)
@@ -41,8 +49,17 @@ public class TransportationService {
 
     public List<TransportationDTO> getAllTransportation(List<Transportation> transportation)
     {
-        List<TransportationDTO> transportationDTOList = TransportationMapper.toDto(transportation);
+        List<TransportationDTO> transportationDTOList = TransportationMapper.toDtoList(transportation);
         return transportationDTOList;
+    }
+
+    public TransportationDTO update(TransportationDTO transportationDTO, UUID id)
+    {
+        Transportation entityToUpdate = findTransportationById(id);//apelare metoda findById de mai sus.
+        Transportation transportation = transportationMapper.updateEntityFromDto(transportationDTO,entityToUpdate);
+        transportationRepository.save(transportation);
+        TransportationDTO transportationDTO1 = new TransportationDTO(transportation);
+        return transportationDTO1;
     }
 
 }

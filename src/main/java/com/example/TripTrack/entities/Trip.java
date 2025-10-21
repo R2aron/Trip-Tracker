@@ -2,9 +2,6 @@ package com.example.TripTrack.entities;
 
 import com.example.TripTrack.dto.TripDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,5 +49,6 @@ public class Trip {
         this.destination = dto.getDestination();
         this.days = dto.getDays();
         this.startOfTrip = dto.getStartOfTrip();
+        //de vazut daca este mai bine sa fac metoda in aici,comstructor, sau in mapper
     }
 }

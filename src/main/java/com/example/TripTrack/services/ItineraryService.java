@@ -1,8 +1,10 @@
 package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.ItineraryDTO;
+import com.example.TripTrack.dto.TransportationDTO;
 import com.example.TripTrack.entities.ItineraryItem;
 import com.example.TripTrack.mappers.ItineraryItemMapper;
+import com.example.TripTrack.mappers.TransportationMapper;
 import com.example.TripTrack.repositories.ItineraryRepository;
 import com.example.TripTrack.services.ServiceInterfaces.InineraryServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;

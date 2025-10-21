@@ -12,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/trips")
@@ -32,30 +30,26 @@ public class TripController {
     @PostMapping
     public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
     {
-        Trip toSave = tripService.createFromDto(dto);
-
-        return ResponseEntity.ok(tripService.toDto(toSave));
+        Trip toSave = new Trip(dto);
+        return ResponseEntity.ok(new TripDTO(toSave));
     }
 
     @GetMapping
     public ResponseEntity<List<TripDTO>> getTrips()
     {
-        return ResponseEntity.ok(tripService.findAll().stream().map(tripService:: toDto).collect(Collectors.toList()));
+        return ResponseEntity.ok(tripService.findAll());
     }
 
     @GetMapping("/lightResponse")
     public ResponseEntity<List<LightResponseDTO>> lightResponseTrips()
     {
-        return ResponseEntity.ok(tripService.findAll().stream().map(tripService::createLightResponseDTO).collect(Collectors.toList()));
+        return ResponseEntity.ok(tripService.getLightResponseDtoList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/lightResponse/{id}")
     public ResponseEntity<LightResponseDTO> getTripById(@PathVariable UUID id)
     {
-        Optional<Trip> tripOptional = tripService.findTripDtoById(id);
-
-        return tripOptional.map(trip -> ResponseEntity.ok(tripService.createLightResponseDTO(trip)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(tripService.findLightResponseDtoById(id));
     }
 
     //de gandit cum sa aduc toate updaturile.
@@ -80,7 +74,7 @@ public class TripController {
     @PutMapping
     public ResponseEntity<TripDTO> updateTrip(@RequestBody @Valid  TripDTO dto, @PathVariable UUID id)
     {
-        return  ResponseEntity.ok(tripService.update(dto,id));
+        return ResponseEntity.ok(tripService.update(dto,id));
     }//nu este bine facuta metodas // de refacut update : https://www.geeksforgeeks.org/java/spring-boot-crud-operations/
 
 
@@ -91,16 +85,12 @@ public class TripController {
        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/findTripsXDaysLonger{days}")
-    public ResponseEntity<List<TripDTO>> getTripsLongerThanDays(@PathVariable int days)
-    {
-        List<Trip> listTripOptional = tripService.findByDaysGreaterThan(days)
-                .orElseThrow(() -> new RuntimeException("Trips longer than " + days + " does not exists"));
-        List<TripDTO> tripsDTO = listTripOptional.stream().map(tripService::toDto).collect(Collectors.toList());
-        return ResponseEntity.ok(tripsDTO);
-    }// de vazut cum scot mesajul de eroare
+    @GetMapping("/findTripsXDaysLonger/{days}")
+    public ResponseEntity<List<TripDTO>> getTripsLongerThanDays(@PathVariable int days) {
+        return ResponseEntity.ok(tripService.findByDaysGreaterThan(days));
+    }
 
-    @GetMapping("/findTripsLessThanXDays{days}")
+    @GetMapping("/findTripsLessThanXDays/{days}")
     public ResponseEntity<List<TripDTO>> getTripsLessThanDays(@PathVariable int days)
     {
         return ResponseEntity.ok(tripService.findByDaysLessThanEqual(days));
@@ -109,39 +99,26 @@ public class TripController {
     @GetMapping("/findByLocation/{destination}")
     public ResponseEntity<List<TripDTO>> findByLocation(@PathVariable String destination)
     {
-        List<Trip> lLocations = tripService.findByDestination(destination);
-        List<TripDTO> locationsDto = lLocations.stream().map(tripService::toDto).collect(Collectors.toList());
-        return ResponseEntity.ok(locationsDto);
+        return ResponseEntity.ok(tripService.findByDestination(destination));
     }
 
     @GetMapping("/{id}/accomodation")
     public ResponseEntity<List<AccommodationDTO>> getAccomodations(@PathVariable UUID id)
     {
-        Trip trip = tripService.findTripDtoById(id)
-                .orElseThrow( () -> new RuntimeException("Trip not found with id: " + id));
-        List<AccommodationDTO> accommodationDTOList = accomodationService.getAllAccomodations(trip.getAccommodations());
-
-        return ResponseEntity.ok(accommodationDTOList);
+//        return ResponseEntity.ok(tripService.find)
+        return ResponseEntity.ok(tripService.getAllAccomodationDto(id));
     }
 
     @GetMapping("/{id}/itinerary")
     public ResponseEntity<List<ItineraryDTO>> getItinerary(@PathVariable UUID id)
     {
-        Trip trip = tripService.findTripDtoById(id)
-                .orElseThrow( () -> new RuntimeException("Trip not found with id: " + id));
-        List<ItineraryDTO> itineraryDTOList = itineraryService.getAllItinerary(trip.getItineraryItems());
-
-        return ResponseEntity.ok(itineraryDTOList);
+        return ResponseEntity.ok(tripService.getAllItinerary(id));
     }
 
     @GetMapping("/{id}/transportation")
     public ResponseEntity<List<TransportationDTO>> getTransportation(@PathVariable UUID id)
     {
-        Trip trip = tripService.findTripDtoById(id)
-                .orElseThrow( () -> new RuntimeException("Trip not found with id: " + id));
-        List<TransportationDTO> transportationDTOList = transportationService.getAllTransportation(trip.getTransportation());
-
-        return ResponseEntity.ok(transportationDTOList);
+        return ResponseEntity.ok(tripService.getAllTransportationDto(id));
     }
 //    ---------------------------------------------------------------------
 

@@ -17,7 +17,7 @@ public class TripMapper {
         return lightResponseDTO;
     }
 
-    public Trip createFromDto(TripDTO dto)
+    public static Trip createFromDto(TripDTO dto)
     {
         Trip trip = new Trip(dto);
 //        trip.setDestination(dto.getDestination());
@@ -77,10 +77,10 @@ public class TripMapper {
             trip.getTransportation().forEach(transportation -> transportation.setParentTrip(trip));
 
         }
-        return tripRepository.save(trip);
+        return trip;
     }
 
-    public TripDTO toDto(Trip trip)
+    public static TripDTO toDto(Trip trip)
     {
         TripDTO dto = new TripDTO(trip);
 //        dto.setId(trip.getId());

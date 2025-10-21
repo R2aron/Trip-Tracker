@@ -1,26 +1,55 @@
 package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.*;
+import com.example.TripTrack.entities.ItineraryItem;
+import com.example.TripTrack.entities.Transportation;
 import com.example.TripTrack.entities.Trip;
 import com.example.TripTrack.mappers.TripMapper;
-import com.example.TripTrack.repositories.ItineraryRepository;
 import com.example.TripTrack.repositories.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TripService {
     @Autowired
     TripRepository tripRepository;
-    @Autowired
-    ItineraryRepository itineraryRepository;
 
+    @Autowired
+    AccomodationService accomodationService;
+
+    @Autowired
+    TransportationService transportationService;
+
+    @Autowired
+    ItineraryService itineraryService;
 
     public List<TripDTO> findAll() {
         return TripMapper.toDtoList(tripRepository.findAll());
+    }
+
+    public List<Trip> getAll()
+    {
+        return tripRepository.findAll();
+    }
+
+    public LightResponseDTO findLightResponseDtoById(UUID id)
+    {
+        return new LightResponseDTO(tripRepository.findById(id).orElseThrow(() -> new RuntimeException("Trip not found")));
+    }
+
+    public List<LightResponseDTO> getLightResponseDtoList()
+    {
+        List<LightResponseDTO> lightResponseDTOList = getAll().stream().map(entity -> {
+            LightResponseDTO lightResponseDTO = new LightResponseDTO(entity);
+            return lightResponseDTO;
+        }).collect(Collectors.toList());
+
+        return lightResponseDTOList;
+
     }
 
     public TripDTO findTripDtoById(UUID id) {
@@ -34,7 +63,7 @@ public class TripService {
     }
 
     public TripDTO save(Trip trip) {
-        return new TripDTO(tripRepository.save(trip));
+        return TripMapper.toDto(tripRepository.save(trip));
     }
 
     public void deleteById(UUID id) {
@@ -56,6 +85,25 @@ public class TripService {
                 .orElseThrow(() -> new RuntimeException("No trip that short")));
 //        de returnat dto
     }
+
+    public List<AccommodationDTO> getAllAccomodationDto(UUID id)
+    {
+        Trip trip = getTripById(id);
+        return accomodationService.getAllAccomodations(trip.getAccommodations());
+    }
+
+    public List<ItineraryDTO> getAllItineraryDto(UUID id)
+    {
+        Trip trip = getTripById(id);
+        return itineraryService.getAllItinerary(trip.getItineraryItems());
+    }
+
+    public List<TransportationDTO> getAllTransportationDto(UUID id)
+    {
+        Trip trip = getTripById(id);
+        return transportationService.getAllTransportation(trip.getTransportation());
+    }
+
 
     public TripDTO update(TripDTO tripDTO, UUID id) {
 

@@ -10,7 +10,8 @@ import java.util.UUID;
 
 public interface AccomodationServiceInterface {
     public List<AccommodationDTO> findAll();
-    public AccommodationDTO findById(UUID id);
+    public AccommodationDTO getById(UUID id);
+    public Accommodation findById(UUID id);
     public AccommodationDTO save(Accommodation accommodation);
     public void deleteById(UUID id);
     public List<AccommodationDTO> getAllAccomodations(List<Accommodation> accommodationList);

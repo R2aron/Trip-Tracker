@@ -112,7 +112,7 @@ public class TripController {
     @GetMapping("/{id}/itinerary")
     public ResponseEntity<List<ItineraryDTO>> getItinerary(@PathVariable UUID id)
     {
-        return ResponseEntity.ok(tripService.getAllItinerary(id));
+        return ResponseEntity.ok(tripService.getAllItineraryDto(id));
     }
 
     @GetMapping("/{id}/transportation")

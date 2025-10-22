@@ -9,7 +9,8 @@ import java.util.UUID;
 
 public interface InineraryServiceInterface {
     public List<ItineraryDTO> findAll();
-    public Optional<ItineraryDTO> findByID(UUID id);
+    public ItineraryDTO getById(UUID id);
+    public ItineraryItem findById(UUID id);
     public ItineraryDTO save(ItineraryItem itineraryItem);
     public void deleteById(UUID id);
     public List<ItineraryDTO> getAllItinerary(List<ItineraryItem> itineraryItemList);

@@ -134,7 +134,7 @@ public class TripMapper {
     {
         List<Trip> tripList = dtos.stream()
                 .map(tripDTO -> {
-                    Trip trip  = new Transportation(tripDTO);
+                    Trip trip  = new Trip(tripDTO);
                     return trip;
                 }).collect(Collectors.toList());
         return tripList;

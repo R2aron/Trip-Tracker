@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @Component
 public class AccommodationMapper {
 
-    public static List<AccommodationDTO> toDtoList(Accommodation accommodationList)
+    public static List<AccommodationDTO> toDtoList(List<Accommodation> accommodationList)
     {
         List<AccommodationDTO> accommodationDTOList = accommodationList.stream()
                 .map(accommodation -> {

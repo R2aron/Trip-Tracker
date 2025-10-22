@@ -13,7 +13,7 @@ public interface TripServiceInterface {
     public TripDTO save(Trip trip);
     public void deleteById(UUID id);
     public List<TripDTO> findByDaysGreaterThan(int numberOfDays);
-    public List<TripDTO> findByDestination(String destination)
-    public List<TripDTO> findByDaysLessThanEqual(int days)
-    public TripDTO update(TripDTO tripDTO, UUID id)
+    public List<TripDTO> findByDestination(String destination);
+    public List<TripDTO> findByDaysLessThanEqual(int days);
+    public TripDTO update(TripDTO tripDTO, UUID id);
 }

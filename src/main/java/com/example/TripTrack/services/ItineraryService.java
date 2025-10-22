@@ -1,10 +1,8 @@
 package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.ItineraryDTO;
-import com.example.TripTrack.dto.TransportationDTO;
 import com.example.TripTrack.entities.ItineraryItem;
 import com.example.TripTrack.mappers.ItineraryItemMapper;
-import com.example.TripTrack.mappers.TransportationMapper;
 import com.example.TripTrack.repositories.ItineraryRepository;
 import com.example.TripTrack.services.ServiceInterfaces.InineraryServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ public class ItineraryService implements InineraryServiceInterface {
     }
 
     @Override
-    public ItineraryDTO getItineraryDtoById(UUID id)
+    public ItineraryDTO getById(UUID id)
     {
         return new ItineraryDTO(itineraryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transportation not found")));
@@ -33,7 +31,8 @@ public class ItineraryService implements InineraryServiceInterface {
 
     //metoda findById care returneaza o entitate
 
-    public ItineraryItem findItineraryById(UUID id)
+    @Override
+    public ItineraryItem findById(UUID id)
     {
         return itineraryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transportation not found"));
@@ -61,7 +60,7 @@ public class ItineraryService implements InineraryServiceInterface {
     @Override
     public ItineraryDTO update(ItineraryDTO itineraryDTO, UUID id)
     {
-        ItineraryItem entityToUpdate = findItineraryById(id);
+        ItineraryItem entityToUpdate = findById(id);
         ItineraryItem itineraryItem = ItineraryItemMapper.updateEntityFromDto(itineraryDTO,entityToUpdate);
         itineraryRepository.save(itineraryItem);
         ItineraryDTO itineraryDTO1 = new ItineraryDTO(itineraryItem);

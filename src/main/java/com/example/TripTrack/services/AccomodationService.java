@@ -20,12 +20,12 @@ public class AccomodationService implements AccomodationServiceInterface {
     @Override
     public List<AccommodationDTO> findAll()
     {
-        List<AccommodationDTO> accommodationDTOList = accommodationRepository.findAll().stream().map(AccommodationMapper::toDtoList).collect(Collectors.toList());
+        List<AccommodationDTO> accommodationDTOList = AccommodationMapper.toDtoList(accommodationRepository.findAll());
         return accommodationDTOList;
     }
 
     @Override
-    public AccommodationDTO getAccomodationDtoById(UUID id)
+    public AccommodationDTO getById(UUID id)
     {
         return new AccommodationDTO(accommodationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transportation not found")));
@@ -33,7 +33,8 @@ public class AccomodationService implements AccomodationServiceInterface {
 
     //metoda findById care returneaza o entitate
 
-    public Accommodation findAccomodationById(UUID id)
+    @Override
+    public Accommodation findById(UUID id)
     {
         return accommodationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transportation not found"));
@@ -42,8 +43,7 @@ public class AccomodationService implements AccomodationServiceInterface {
     @Override
     public AccommodationDTO save(Accommodation accommodation)
     {
-        AccommodationDTO accommodationDTO = accommodationRepository.save(accommodation);
-        return accommodationDTO;
+        return  new AccommodationDTO(accommodationRepository.save(accommodation));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class AccomodationService implements AccomodationServiceInterface {
     @Override
     public AccommodationDTO update(AccommodationDTO accommodationDTO, UUID id)
     {
-        Accommodation accommodationToUpdate = findAccomodationById(id);
+        Accommodation accommodationToUpdate = findById(id);
         Accommodation accommodation = AccommodationMapper.updateEntityFromDto(accommodationDTO,accommodationToUpdate);
         accommodationRepository.save(accommodation);
         return new AccommodationDTO(accommodation);

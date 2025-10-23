@@ -2,13 +2,10 @@ package com.example.TripTrack.services.ServiceInterfaces;
 
 import com.example.TripTrack.dto.AccommodationDTO;
 import com.example.TripTrack.entities.Accommodation;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-public interface AccomodationServiceInterface {
+public interface AccommodationServiceInterface {
     public List<AccommodationDTO> findAll();
     public AccommodationDTO getById(UUID id);
     public Accommodation findById(UUID id);

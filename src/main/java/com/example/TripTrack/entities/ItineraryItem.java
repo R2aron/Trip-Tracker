@@ -3,8 +3,6 @@ package com.example.TripTrack.entities;
 import com.example.TripTrack.dto.ItineraryDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +19,7 @@ import java.util.UUID;
 public class ItineraryItem {
 
     @Id
-    @GeneratedValue
-    @org.hibernate.annotations.UuidGenerator
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private LocalDate date;
     private LocalTime time;

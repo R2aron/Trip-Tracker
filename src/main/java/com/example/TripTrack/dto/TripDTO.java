@@ -33,14 +33,10 @@ public class TripDTO {
     @Valid
     @NotEmpty
     private List<ItineraryDTO> itineraryDTOS;
-    //Accommodation
-//    private List<Accommodation> accommodations;
 
     @Valid
     @NotNull
     private  List<AccommodationDTO> accommodationDTOS;
-    //Transport
-//    private List<Transportation> transportations;
 
     @Valid
     @NotEmpty
@@ -53,6 +49,6 @@ public class TripDTO {
         this.destination = trip.getDestination();
         this.days = trip.getDays();
         this.startOfTrip = trip.getStartOfTrip();
-    }//cred ca este acelasi lucru daca il fac in constructor
+    }
 
 }

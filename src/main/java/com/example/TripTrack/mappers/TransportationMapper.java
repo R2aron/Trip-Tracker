@@ -2,17 +2,17 @@ package com.example.TripTrack.mappers;
 
 import com.example.TripTrack.dto.TransportationDTO;
 import com.example.TripTrack.entities.Transportation;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public class TransportationMapper {
 
-    public static List<TransportationDTO> toDtoList(List<Transportation> transportation)
+    public static List<TransportationDTO> toDtoList(List<Transportation> transportationList)
     {
-        List<TransportationDTO> transportationDTOList = transportation.stream()
+        if(transportationList == null || transportationList.isEmpty())
+            return List.of();
+        List<TransportationDTO> transportationDTOList = transportationList.stream()
                 .map(transp -> {
                     TransportationDTO transportationDTO = new TransportationDTO(transp);
                     return  transportationDTO;
@@ -20,9 +20,11 @@ public class TransportationMapper {
         return transportationDTOList;
     }
 
-    public static List<Transportation> transportationListFromDtos(List<TransportationDTO> dtos)
+    public static List<Transportation> transportationListFromDtos(List<TransportationDTO> dtoList)
     {
-        List<Transportation> transportationList = dtos.stream()
+        if(dtoList == null || dtoList.isEmpty())
+            return List.of();
+        List<Transportation> transportationList = dtoList.stream()
                 .map(transp -> {
                     Transportation transportation  = new Transportation(transp);
                     return transportation;
@@ -30,23 +32,12 @@ public class TransportationMapper {
         return transportationList;
     }
 
-    public Transportation updateEntityFromDto(TransportationDTO transportationDTO,Transportation entityToUpdate) {
-        if (transportationDTO.getCategory() != null) {
-            entityToUpdate.setCategory(transportationDTO.getCategory());
-        }
-
-        if (transportationDTO.getPrice() != null) {
-            entityToUpdate.setPrice(transportationDTO.getPrice());
-        }
-
-        if (transportationDTO.getDistance() != null) {
-            entityToUpdate.setDistance(transportationDTO.getDistance());
-        }
-
-        if (transportationDTO.getRoute() != null) {
-            entityToUpdate.setRoute(transportationDTO.getRoute());
-        }
-
+    public static Transportation updateEntityFromDto(TransportationDTO transportationDTO,Transportation entityToUpdate)
+    {
+        entityToUpdate.setCategory(transportationDTO.getCategory());
+        entityToUpdate.setPrice(transportationDTO.getPrice());
+        entityToUpdate.setDistance(transportationDTO.getDistance());
+        entityToUpdate.setRoute(transportationDTO.getRoute());
         return entityToUpdate;
     }
 }

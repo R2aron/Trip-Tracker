@@ -2,10 +2,10 @@ package com.example.TripTrack.controllers;
 
 import com.example.TripTrack.dto.*;
 import com.example.TripTrack.entities.Trip;
-import com.example.TripTrack.services.AccomodationService;
-import com.example.TripTrack.services.ItineraryService;
-import com.example.TripTrack.services.TransportationService;
-import com.example.TripTrack.services.TripService;
+import com.example.TripTrack.services.ServiceInterfaces.AccommodationServiceInterface;
+import com.example.TripTrack.services.ServiceInterfaces.ItineraryServiceInterface;
+import com.example.TripTrack.services.ServiceInterfaces.TransportationServiceInterface;
+import com.example.TripTrack.services.ServiceInterfaces.TripServiceInterface;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +19,17 @@ import java.util.UUID;
 public class TripController {
 
     @Autowired
-    TripService tripService;
+    TripServiceInterface tripService;
     @Autowired
-    ItineraryService itineraryService;
+    ItineraryServiceInterface itineraryService;
     @Autowired
-    AccomodationService accomodationService;
+    AccommodationServiceInterface accommodationService;
     @Autowired
-    TransportationService transportationService;
+    TransportationServiceInterface transportationService;
 
     @PostMapping
     public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
+
     {
         Trip toSave = new Trip(dto);
         return ResponseEntity.ok(new TripDTO(toSave));
@@ -53,10 +54,10 @@ public class TripController {
     }
 
     //de gandit cum sa aduc toate updaturile.
-    @PutMapping("/updateAccomodation")
+    @PutMapping("/updateAccommodation")
     public ResponseEntity<AccommodationDTO> updateAccomodation(@RequestBody @Valid AccommodationDTO dto, @PathVariable UUID id)
     {
-        return ResponseEntity.ok(accomodationService.update(dto,id));
+        return ResponseEntity.ok(accommodationService.update(dto,id));
     }
 
     @PutMapping("/updateTransportation")
@@ -75,7 +76,7 @@ public class TripController {
     public ResponseEntity<TripDTO> updateTrip(@RequestBody @Valid  TripDTO dto, @PathVariable UUID id)
     {
         return ResponseEntity.ok(tripService.update(dto,id));
-    }//nu este bine facuta metodas // de refacut update : https://www.geeksforgeeks.org/java/spring-boot-crud-operations/
+    }
 
 
     @DeleteMapping("/{id}")
@@ -105,7 +106,6 @@ public class TripController {
     @GetMapping("/{id}/accomodation")
     public ResponseEntity<List<AccommodationDTO>> getAccomodations(@PathVariable UUID id)
     {
-//        return ResponseEntity.ok(tripService.find)
         return ResponseEntity.ok(tripService.getAllAccomodationDto(id));
     }
 
@@ -120,31 +120,4 @@ public class TripController {
     {
         return ResponseEntity.ok(tripService.getAllTransportationDto(id));
     }
-//    ---------------------------------------------------------------------
-
-
-//    @PostMapping("/itinerary")
-//    public ResponseEntity<ItineraryDTO> create itinerary(@RequestBody ItineraryDTO dto)
-//    {
-//        ItineraryItem itemToSave = itineraryService.createFromDto(dto);
-//        return ResponseEntity.ok(itineraryService.toDto(itemToSave));
-//    }
-
-//    @GetMapping("/itinerary")
-//    public  ResponseEntity<List<ItineraryDTO>> getAll()
-//    {
-//        List<ItineraryDTO> itineraryList= itineraryService.findAll().stream().map(itineraryService::toDto).collect(Collectors.toList());
-//        return ResponseEntity.ok(itineraryList);
-//    }
-//
-//    @GetMapping("/itinerary")
-//    public ResponseEntity<ItineraryDTO> getById(UUID id)
-//    {
-//        ItineraryItem item = itineraryService.findByID(id)
-//                .orElseThrow(() -> new RuntimeException("Item not found"));
-//        //gresit
-//    }
-
-
-
 }

@@ -4,10 +4,9 @@ import com.example.TripTrack.dto.ItineraryDTO;
 import com.example.TripTrack.entities.ItineraryItem;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-public interface InineraryServiceInterface {
+public interface ItineraryServiceInterface {
     public List<ItineraryDTO> findAll();
     public ItineraryDTO getById(UUID id);
     public ItineraryItem findById(UUID id);

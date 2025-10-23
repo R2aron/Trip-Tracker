@@ -2,7 +2,6 @@ package com.example.TripTrack.mappers;
 
 import com.example.TripTrack.dto.ItineraryDTO;
 import com.example.TripTrack.entities.ItineraryItem;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +9,6 @@ import java.util.stream.Collectors;
 //de vazut daca trebuie facuta entity sau service
 //de testat cu @Mapper, pana atunci o fac clasa utilitara cu metode stattice.
 
-@Component
 public class  ItineraryItemMapper {
 
     // de facut metoda care transforma 1 la 1 si metoda care transforma * la *
@@ -18,6 +16,8 @@ public class  ItineraryItemMapper {
 
     public static List<ItineraryDTO> toDtoList(List<ItineraryItem> itemList)
     {
+        if(itemList == null || itemList.isEmpty())
+            return List.of();
         List<ItineraryDTO> itineraryDTOList = itemList.stream()
                 .map(itineraryItem -> {
                     ItineraryDTO itin = new ItineraryDTO(itineraryItem);// mai scurt cu constructor
@@ -27,9 +27,11 @@ public class  ItineraryItemMapper {
         return itineraryDTOList;
     }
 
-    public static List<ItineraryItem> itineraryListFromDtos(List<ItineraryDTO> dtos)
+    public static List<ItineraryItem> itineraryListFromDtos(List<ItineraryDTO> dtoList)
     {
-        List<ItineraryItem> itineraryItems = dtos.stream()
+        if(dtoList == null || dtoList.isEmpty())
+            return List.of();
+        List<ItineraryItem> itineraryItems = dtoList.stream()
                 .map(itin -> {
                     ItineraryItem itineraryItem = new ItineraryItem(itin);
                     return itineraryItem;
@@ -39,26 +41,10 @@ public class  ItineraryItemMapper {
 
     public static ItineraryItem updateEntityFromDto(ItineraryDTO itineraryDTO,ItineraryItem entityToUpdate)
     {
-        if(itineraryDTO.getLocation() != null)
-        {
-            entityToUpdate.setLocation(itineraryDTO.getLocation());
-        }
-
-        if(itineraryDTO.getPrice() != null)
-        {
-            entityToUpdate.setPrice(itineraryDTO.getPrice());
-        }
-
-        if(itineraryDTO.getDate() != null)
-        {
-            entityToUpdate.setDate(itineraryDTO.getDate());
-        }
-
-        if(itineraryDTO.getPrice() != null)
-        {
-            entityToUpdate.setPrice(itineraryDTO.getPrice());
-        }
-
+        entityToUpdate.setLocation(itineraryDTO.getLocation());
+        entityToUpdate.setPrice(itineraryDTO.getPrice());
+        entityToUpdate.setDate(itineraryDTO.getDate());
+        entityToUpdate.setPrice(itineraryDTO.getPrice());
         return entityToUpdate;
     }
 }

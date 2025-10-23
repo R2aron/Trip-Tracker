@@ -22,8 +22,7 @@ import java.util.UUID;
 public class Trip {
 
     @Id
-    @GeneratedValue
-    @org.hibernate.annotations.UuidGenerator
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
     private String destination;

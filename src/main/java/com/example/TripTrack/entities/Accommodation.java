@@ -18,8 +18,7 @@ import java.util.UUID;
 public class Accommodation {
 
     @Id
-    @GeneratedValue
-    @org.hibernate.annotations.UuidGenerator
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String name;

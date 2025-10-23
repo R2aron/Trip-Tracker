@@ -1,6 +1,9 @@
 package com.example.TripTrack.dto;
 
 import com.example.TripTrack.entities.ItineraryItem;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,8 +19,11 @@ import java.util.UUID;
 @Data
 public class ItineraryDTO {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private UUID id;
     @NotNull
+    @FutureOrPresent
     private LocalDate date;
     @NotNull
     private LocalTime time;

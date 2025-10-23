@@ -27,6 +27,11 @@ public class TripService implements TripServiceInterface {
     ItineraryService itineraryService;
 
     @Override
+    public TripDTO save(Trip trip) {
+        return TripMapper.toDto(tripRepository.save(trip));
+    }
+
+    @Override
     public List<TripDTO> findAll() {
         return TripMapper.toDtoList(tripRepository.findAll());
     }
@@ -68,11 +73,6 @@ public class TripService implements TripServiceInterface {
     }
 
     @Override
-    public TripDTO save(Trip trip) {
-        return TripMapper.toDto(tripRepository.save(trip));
-    }
-
-    @Override
     public void deleteById(UUID id) {
         tripRepository.deleteById(id);
     }
@@ -96,7 +96,7 @@ public class TripService implements TripServiceInterface {
     }
 
     @Override
-    public List<AccommodationDTO> getAllAccomodationDto(UUID id)
+    public List<AccommodationDTO> getAllAccommodationDto(UUID id)
     {
         Trip trip = getById(id);
         return accommodationService.getAllAccomodations(trip.getAccommodations());
@@ -121,8 +121,7 @@ public class TripService implements TripServiceInterface {
     public TripDTO update(TripDTO tripDTO, UUID id) {
 
         Trip tripToUpdate = getById(id);
-        Trip tripUpdated = TripMapper.updateEntityFromDto(tripDTO,tripToUpdate);
-        return new TripDTO(tripRepository.save(tripUpdated));
+        return new TripDTO(tripRepository.save(TripMapper.updateEntityFromDto(tripDTO,tripToUpdate)));
     }
 
 //https://chatgpt.com/share/68d93c80-0d9c-8001-936f-748a4a641020

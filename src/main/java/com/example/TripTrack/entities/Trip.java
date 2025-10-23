@@ -1,6 +1,9 @@
 package com.example.TripTrack.entities;
 
 import com.example.TripTrack.dto.TripDTO;
+import com.example.TripTrack.mappers.AccommodationMapper;
+import com.example.TripTrack.mappers.ItineraryItemMapper;
+import com.example.TripTrack.mappers.TransportationMapper;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +41,15 @@ public class Trip {
     @OneToMany(mappedBy = "parentTrip", cascade = CascadeType.ALL)
     private List<Transportation> transportation;
 
-    @ManyToMany(mappedBy = "trips", fetch = FetchType.LAZY)
+//    @ManyToMany(mappedBy = "trips", fetch = FetchType.LAZY)
+//    private Set<User> users = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "trips_users",
+            joinColumns = @JoinColumn(name = "trip_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private Set<User> users = new HashSet<>();
 
 
@@ -48,6 +59,28 @@ public class Trip {
         this.destination = dto.getDestination();
         this.days = dto.getDays();
         this.startOfTrip = dto.getStartOfTrip();
-        //de vazut daca este mai bine sa fac metoda in aici,comstructor, sau in mapper
+
+        if(dto.getItineraryDTOS() != null && !dto.getItineraryDTOS().isEmpty())
+        {
+            List<ItineraryItem> items = ItineraryItemMapper.itineraryListFromDtos(dto.getItineraryDTOS());
+            this.setItineraryItems(items);
+            this.getItineraryItems().forEach(itineraryItem -> itineraryItem.setParent(this));
+        }
+
+        if(dto.getAccommodationDTOS() != null && !dto.getAccommodationDTOS().isEmpty())
+        {
+            List<Accommodation> accommodationList = AccommodationMapper.accomodationListFromDtos(dto.getAccommodationDTOS());
+            this.setAccommodations(accommodationList);
+            this.getAccommodations().forEach(accommodation -> accommodation.setParent(this));
+
+        }
+
+        if(dto.getTransportationDTOS() != null && !dto.getTransportationDTOS().isEmpty())
+        {
+            List<Transportation> transportationList = TransportationMapper.transportationListFromDtos(dto.getTransportationDTOS());
+            this.setTransportation(transportationList);
+            this.getTransportation().forEach(transportation -> transportation.setParentTrip(this));
+
+        }
     }
 }

@@ -29,7 +29,6 @@ public class ItineraryItem {
 
     @ManyToOne
     @JoinColumn(name = "trip_id")
-    @JsonBackReference
     private Trip parent;
 
 

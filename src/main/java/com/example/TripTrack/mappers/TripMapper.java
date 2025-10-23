@@ -97,14 +97,14 @@ public class TripMapper {
 
     public static Trip updateEntityFromDto(TripDTO tripDTO,Trip entityToUpdate) {
 
-            entityToUpdate.setName(tripDTO.getName());
-            entityToUpdate.setDestination(tripDTO.getDestination());
-            entityToUpdate.setDays(tripDTO.getDays());
-            entityToUpdate.setStartOfTrip(tripDTO.getStartOfTrip());
+        entityToUpdate.setName(tripDTO.getName());
+        entityToUpdate.setDestination(tripDTO.getDestination());
+        entityToUpdate.setDays(tripDTO.getDays());
+        entityToUpdate.setStartOfTrip(tripDTO.getStartOfTrip());
 
-            entityToUpdate.setItineraryItems(ItineraryItemMapper.itineraryListFromDtos(tripDTO.getItineraryDTOS()));
-            entityToUpdate.setAccommodations(AccommodationMapper.accomodationListFromDtos(tripDTO.getAccommodationDTOS()));
-            entityToUpdate.setTransportation(TransportationMapper.transportationListFromDtos(tripDTO.getTransportationDTOS()));
+        entityToUpdate.setItineraryItems(ItineraryItemMapper.itineraryListFromDtos(tripDTO.getItineraryDTOS()));
+        entityToUpdate.setAccommodations(AccommodationMapper.accomodationListFromDtos(tripDTO.getAccommodationDTOS()));
+        entityToUpdate.setTransportation(TransportationMapper.transportationListFromDtos(tripDTO.getTransportationDTOS()));
 
         return entityToUpdate;
     }

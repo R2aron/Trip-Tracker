@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/trips")
+@RequestMapping("/api/trips")
 public class TripController {
 
     @Autowired
@@ -31,8 +31,7 @@ public class TripController {
     public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
 
     {
-        Trip toSave = new Trip(dto);
-        return ResponseEntity.ok(new TripDTO(toSave));
+        return ResponseEntity.ok(tripService.save(new Trip(dto)));
     }
 
     @GetMapping
@@ -53,39 +52,6 @@ public class TripController {
         return ResponseEntity.ok(tripService.findLightResponseDtoById(id));
     }
 
-    //de gandit cum sa aduc toate updaturile.
-    @PutMapping("/updateAccommodation")
-    public ResponseEntity<AccommodationDTO> updateAccomodation(@RequestBody @Valid AccommodationDTO dto, @PathVariable UUID id)
-    {
-        return ResponseEntity.ok(accommodationService.update(dto,id));
-    }
-
-    @PutMapping("/updateTransportation")
-    public ResponseEntity<TransportationDTO> updateTransportation(@RequestBody @Valid TransportationDTO dto, @PathVariable UUID id)
-    {
-        return ResponseEntity.ok(transportationService.update(dto,id));
-    }
-
-    @PutMapping("/updateItinerary")
-    public ResponseEntity<ItineraryDTO> updateItinerary(@RequestBody @Valid ItineraryDTO dto, @PathVariable UUID id)
-    {
-        return ResponseEntity.ok(itineraryService.update(dto,id));
-    }
-
-    @PutMapping
-    public ResponseEntity<TripDTO> updateTrip(@RequestBody @Valid  TripDTO dto, @PathVariable UUID id)
-    {
-        return ResponseEntity.ok(tripService.update(dto,id));
-    }
-
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTrip(@PathVariable UUID id)
-    {
-        tripService.deleteById(id);
-       return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/findTripsXDaysLonger/{days}")
     public ResponseEntity<List<TripDTO>> getTripsLongerThanDays(@PathVariable int days) {
         return ResponseEntity.ok(tripService.findByDaysGreaterThan(days));
@@ -103,10 +69,10 @@ public class TripController {
         return ResponseEntity.ok(tripService.findByDestination(destination));
     }
 
-    @GetMapping("/{id}/accomodation")
-    public ResponseEntity<List<AccommodationDTO>> getAccomodations(@PathVariable UUID id)
+    @GetMapping("/{id}/accommodation")
+    public ResponseEntity<List<AccommodationDTO>> getAllAccommodations(@PathVariable UUID id)
     {
-        return ResponseEntity.ok(tripService.getAllAccomodationDto(id));
+        return ResponseEntity.ok(tripService.getAllAccommodationDto(id));
     }
 
     @GetMapping("/{id}/itinerary")
@@ -120,4 +86,38 @@ public class TripController {
     {
         return ResponseEntity.ok(tripService.getAllTransportationDto(id));
     }
+
+    //de gandit cum sa aduc toate updaturile.
+    @PutMapping("/{id}/updateAccommodation")
+    public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody @Valid AccommodationDTO dto, @PathVariable UUID id)
+    {
+        return ResponseEntity.ok(accommodationService.update(dto,id));
+    }
+
+    @PutMapping("/{id}/updateTransportation")
+    public ResponseEntity<TransportationDTO> updateTransportation(@RequestBody @Valid TransportationDTO dto, @PathVariable UUID id)
+    {
+        return ResponseEntity.ok(transportationService.update(dto,id));
+    }
+
+    @PutMapping("/{id}/updateItinerary")
+    public ResponseEntity<ItineraryDTO> updateItinerary(@RequestBody @Valid ItineraryDTO dto, @PathVariable UUID id)
+    {
+        return ResponseEntity.ok(itineraryService.update(dto,id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TripDTO> updateTrip(@RequestBody @Valid  TripDTO dto, @PathVariable UUID id)
+    {
+        return ResponseEntity.ok(tripService.update(dto,id));
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTrip(@PathVariable UUID id)
+    {
+        tripService.deleteById(id);
+       return ResponseEntity.noContent().build();
+    }
+
 }

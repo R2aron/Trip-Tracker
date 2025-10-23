@@ -30,7 +30,6 @@ public class Accommodation {
 
     @ManyToOne
     @JoinColumn(name = "trip_id")
-    @JsonBackReference
     private Trip parent;
 
     public Accommodation(AccommodationDTO dto) {

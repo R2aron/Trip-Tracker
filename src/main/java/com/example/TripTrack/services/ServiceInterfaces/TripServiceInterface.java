@@ -20,7 +20,7 @@ public interface TripServiceInterface {
     public TripDTO update(TripDTO tripDTO, UUID id);
     public LightResponseDTO findLightResponseDtoById(UUID id);
     public List<LightResponseDTO> getLightResponseDtoList();
-    public List<AccommodationDTO> getAllAccomodationDto(UUID id);
+    public List<AccommodationDTO> getAllAccommodationDto(UUID id);
     public List<ItineraryDTO> getAllItineraryDto(UUID id);
     public List<TransportationDTO> getAllTransportationDto(UUID id);
 }

@@ -28,7 +28,6 @@ public class Transportation {
 
     @ManyToOne
     @JoinColumn(name = "trip_id")
-    @JsonBackReference
     private Trip parentTrip;
 
     public Transportation(TransportationDTO dto) {

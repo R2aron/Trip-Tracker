@@ -28,8 +28,15 @@ public class TripService implements TripServiceInterface {
 
     @Override
     public TripDTO save(Trip trip) {
-        return TripMapper.toDto(tripRepository.save(trip));
+//        return TripMapper.toDto(tripRepository.save(trip));
+        return new TripDTO(tripRepository.save(trip));
     }
+
+    public <T extends BaseTripDto> TripDTO save(T dto)
+    {
+        return new TripDTO(tripRepository.save(new Trip(dto)));
+    }
+
 
     @Override
     public List<TripDTO> findAll() {

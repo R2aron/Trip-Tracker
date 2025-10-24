@@ -1,7 +1,6 @@
 package com.example.TripTrack.entities;
 
 import com.example.TripTrack.dto.AccommodationDTO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

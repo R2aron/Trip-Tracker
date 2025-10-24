@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,9 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
+@NoArgsConstructor
 public class ItineraryDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

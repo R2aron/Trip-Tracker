@@ -1,7 +1,6 @@
 package com.example.TripTrack.entities;
 
 import com.example.TripTrack.dto.TransportationDTO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +27,7 @@ public class Transportation {
 
     @ManyToOne
     @JoinColumn(name = "trip_id")
-    private Trip parentTrip;
+    private Trip parent;
 
     public Transportation(TransportationDTO dto) {
         this.id = dto.getId();

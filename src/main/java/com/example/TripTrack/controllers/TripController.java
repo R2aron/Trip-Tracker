@@ -1,6 +1,7 @@
 package com.example.TripTrack.controllers;
 
 import com.example.TripTrack.dto.*;
+import com.example.TripTrack.entities.Accommodation;
 import com.example.TripTrack.entities.Trip;
 import com.example.TripTrack.services.ServiceInterfaces.AccommodationServiceInterface;
 import com.example.TripTrack.services.ServiceInterfaces.ItineraryServiceInterface;
@@ -27,9 +28,20 @@ public class TripController {
     @Autowired
     TransportationServiceInterface transportationService;
 
-    @PostMapping
-    public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
+//    @PostMapping
+//    public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
+//    {
+//        return ResponseEntity.ok(tripService.save(new Trip(dto)));
+//    }
 
+    @PostMapping("/Full")
+    public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
+    {
+        return ResponseEntity.ok(tripService.save(new Trip(dto)));
+    }
+
+    @PostMapping("/Base")
+    public ResponseEntity<TripDTO> createLightTrip(@Valid @RequestBody BaseTripDto dto)
     {
         return ResponseEntity.ok(tripService.save(new Trip(dto)));
     }
@@ -69,11 +81,36 @@ public class TripController {
         return ResponseEntity.ok(tripService.findByDestination(destination));
     }
 
-    @GetMapping("/{id}/accommodation")
+
+//    ====ACCOMMODATION====
+
+    @PostMapping("/{id}/createAccommodation")
+    public ResponseEntity<AccommodationDTO> createAccommodation(@PathVariable UUID id, @Valid @RequestBody AccommodationDTO accommodationDTO)
+    {
+        return ResponseEntity.ok(accommodationService.save(id,accommodationDTO));
+    }
+
+    @GetMapping("/{id}/getAllAccommodation")
     public ResponseEntity<List<AccommodationDTO>> getAllAccommodations(@PathVariable UUID id)
     {
         return ResponseEntity.ok(tripService.getAllAccommodationDto(id));
     }
+
+    @PutMapping("/{id}/updateAccommodation")
+    public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody @Valid AccommodationDTO dto, @PathVariable UUID id)
+    {
+        return ResponseEntity.ok(accommodationService.update(dto,id));
+    }
+
+    @DeleteMapping("/{id}/deleteAccommodation")
+    public ResponseEntity<Void> delete(@PathVariable UUID id)
+    {
+        accommodationService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+//    =================
+
 
     @GetMapping("/{id}/itinerary")
     public ResponseEntity<List<ItineraryDTO>> getItinerary(@PathVariable UUID id)
@@ -87,12 +124,7 @@ public class TripController {
         return ResponseEntity.ok(tripService.getAllTransportationDto(id));
     }
 
-    //de gandit cum sa aduc toate updaturile.
-    @PutMapping("/{id}/updateAccommodation")
-    public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody @Valid AccommodationDTO dto, @PathVariable UUID id)
-    {
-        return ResponseEntity.ok(accommodationService.update(dto,id));
-    }
+
 
     @PutMapping("/{id}/updateTransportation")
     public ResponseEntity<TransportationDTO> updateTransportation(@RequestBody @Valid TransportationDTO dto, @PathVariable UUID id)

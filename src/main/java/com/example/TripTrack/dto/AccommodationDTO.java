@@ -7,16 +7,14 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
+@NoArgsConstructor
 public class AccommodationDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -36,6 +34,8 @@ public class AccommodationDTO {
     private Float price;
     @NotNull
     private String address;
+
+    //CheckIn<CheckOut
 
     public AccommodationDTO(Accommodation accommodation) {
         this.name = accommodation.getName();

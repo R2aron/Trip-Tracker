@@ -1,7 +1,6 @@
 package com.example.TripTrack.controllers;
 
 import com.example.TripTrack.dto.*;
-import com.example.TripTrack.entities.Accommodation;
 import com.example.TripTrack.entities.Trip;
 import com.example.TripTrack.services.ServiceInterfaces.AccommodationServiceInterface;
 import com.example.TripTrack.services.ServiceInterfaces.ItineraryServiceInterface;
@@ -37,7 +36,7 @@ public class TripController {
     @PostMapping("/Full")
     public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
     {
-        return ResponseEntity.ok(tripService.save(new Trip(dto)));
+        return ResponseEntity.ok(tripService.save(dto));
     }
 
     @PostMapping("/Base")

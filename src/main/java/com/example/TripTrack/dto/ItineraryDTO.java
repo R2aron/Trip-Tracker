@@ -24,11 +24,12 @@ public class ItineraryDTO {
     @FutureOrPresent
     private LocalDate date;
     @NotNull
+    @FutureOrPresent
     private LocalTime time;
     @NotEmpty
     private String location;
     @NotNull
-    private Float price;
+    private Double price;
     @NotNull
     private Boolean isVisited;
 

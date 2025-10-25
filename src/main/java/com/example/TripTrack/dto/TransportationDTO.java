@@ -26,7 +26,7 @@ public class TransportationDTO {
     @Positive
     private Float distance;
     @NotNull
-    private  Float price;
+    private  Double price;
 
 
     public TransportationDTO(Transportation transportation)

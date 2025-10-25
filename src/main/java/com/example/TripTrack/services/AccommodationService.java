@@ -7,6 +7,7 @@ import com.example.TripTrack.mappers.AccommodationMapper;
 import com.example.TripTrack.repositories.AccommodationRepository;
 import com.example.TripTrack.repositories.TripRepository;
 import com.example.TripTrack.services.ServiceInterfaces.AccommodationServiceInterface;
+import com.example.TripTrack.services.ServiceInterfaces.UpdateTotalPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,8 @@ public class AccommodationService implements AccommodationServiceInterface {
     AccommodationRepository accommodationRepository;
     @Autowired
     TripRepository tripRepository;
+    @Autowired
+    UpdateTotalPrice updateTotalPrice;
 
     @Override
     public AccommodationDTO save(UUID tripId, AccommodationDTO dto)
@@ -28,13 +31,17 @@ public class AccommodationService implements AccommodationServiceInterface {
 
         Accommodation accommodation = new Accommodation(dto);
         accommodation.setParent(trip);
-        return new AccommodationDTO(accommodationRepository.save(accommodation));
+        accommodationRepository.save(accommodation);
+        updateTotalPrice.updateTotalPrice(tripId);
+
+        return new AccommodationDTO(accommodation);
+
     }
 
     @Override
-    public List<AccommodationDTO> findAllByParentId(UUID tripId)
+    public List<Accommodation> findAllByParentId(UUID tripId)
     {
-        return AccommodationMapper.toDtoList(accommodationRepository.findByParentId(tripId));
+        return accommodationRepository.findAllByParentId(tripId);
     }
 
     @Override
@@ -56,6 +63,7 @@ public class AccommodationService implements AccommodationServiceInterface {
     public void deleteById(UUID id)
     {
         accommodationRepository.deleteById(id);
+        updateTotalPrice.updateTotalPrice(id);
     }
 
 
@@ -63,7 +71,9 @@ public class AccommodationService implements AccommodationServiceInterface {
     public AccommodationDTO update(AccommodationDTO accommodationDTO, UUID id)
     {
         Accommodation accommodationToUpdate = findById(id);
-        return new AccommodationDTO(accommodationRepository.save(AccommodationMapper.updateEntityFromDto(accommodationDTO,accommodationToUpdate)));
+        accommodationRepository.save(AccommodationMapper.updateEntityFromDto(accommodationDTO,accommodationToUpdate));
+        updateTotalPrice.updateTotalPrice(id);
+        return new AccommodationDTO(accommodationToUpdate);
     }
 
     @Override

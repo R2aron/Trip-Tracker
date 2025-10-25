@@ -2,9 +2,12 @@ package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.TransportationDTO;
 import com.example.TripTrack.entities.Transportation;
+import com.example.TripTrack.entities.Trip;
 import com.example.TripTrack.mappers.TransportationMapper;
 import com.example.TripTrack.repositories.TransportationRepository;
+import com.example.TripTrack.repositories.TripRepository;
 import com.example.TripTrack.services.ServiceInterfaces.TransportationServiceInterface;
+import com.example.TripTrack.services.ServiceInterfaces.UpdateTotalPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +18,28 @@ import java.util.UUID;
 public class TransportationService implements TransportationServiceInterface {
     @Autowired
     TransportationRepository transportationRepository;
+    @Autowired
+    TripRepository tripRepository;
+    @Autowired
+    UpdateTotalPrice updateTotalPrice;
 
     @Override
-    public List<TransportationDTO> findAll()
+    public TransportationDTO save(UUID tripId, TransportationDTO dto)
     {
-        return TransportationMapper.toDtoList(transportationRepository.findAll());
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new RuntimeException("Trip not found"));
+        Transportation transportation = new Transportation(dto);
+        transportation.setParent(trip);
+        transportationRepository.save(transportation);
+        updateTotalPrice.updateTotalPrice(tripId);
+
+        return new TransportationDTO(transportation);
+    }
+
+    @Override
+    public List<Transportation> findAllByParentId(UUID tripId)
+    {
+        return transportationRepository.findAllByParentId(tripId);
     }
 
     @Override
@@ -36,31 +56,28 @@ public class TransportationService implements TransportationServiceInterface {
                 .orElseThrow(() -> new RuntimeException("Transportation not found"));
     }
 
-    @Override
-    public TransportationDTO save(Transportation transportation)
-    {
-        return new TransportationDTO(transportationRepository.save(transportation));
-    }
+
 
     @Override
     public void deleteById(UUID id)
     {
         transportationRepository.deleteById(id);
+        updateTotalPrice.updateTotalPrice(id);
     }
 
     @Override
-    public List<TransportationDTO> getAllTransportationDto(List<Transportation> transportation)
+    public List<TransportationDTO> getAllTransportationDto(List<Transportation> transportationList)
     {
-        List<TransportationDTO> transportationDTOList = TransportationMapper.toDtoList(transportation);
-        return transportationDTOList;
+        return TransportationMapper.toDtoList(transportationList);
     }
 
     @Override
     public TransportationDTO update(TransportationDTO transportationDTO, UUID id)
     {
         Transportation entityToUpdate = findById(id);
-        Transportation transportation = TransportationMapper.updateEntityFromDto(transportationDTO,entityToUpdate);
-        return new TransportationDTO(transportationRepository.save(transportation));
+        transportationRepository.save(TransportationMapper.updateEntityFromDto(transportationDTO,entityToUpdate));
+        updateTotalPrice.updateTotalPrice(id);
+        return new TransportationDTO(entityToUpdate);
     }
 
 }

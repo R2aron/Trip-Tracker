@@ -5,6 +5,7 @@ import com.example.TripTrack.entities.Accommodation;
 import com.example.TripTrack.entities.ItineraryItem;
 import com.example.TripTrack.entities.Transportation;
 import com.example.TripTrack.entities.Trip;
+import com.example.TripTrack.services.ServiceInterfaces.TripServiceInterface;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -117,8 +118,6 @@ public class TripMapper {
             entityToUpdate.setTransportation(TransportationMapper.transportationListFromDtos(tripDTO.getTransportationDTOS()));
             entityToUpdate.getTransportation().forEach(transportation -> transportation.setParent(entityToUpdate));
         }
-
-
         return entityToUpdate;
     }
 

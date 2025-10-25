@@ -31,7 +31,7 @@ public class AccommodationDTO {
     @Future
     private LocalDateTime checkOut;
     @NotNull
-    private Float price;
+    private Double price;
     @NotNull
     private String address;
 

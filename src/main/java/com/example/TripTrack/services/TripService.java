@@ -5,6 +5,7 @@ import com.example.TripTrack.entities.Trip;
 import com.example.TripTrack.mappers.TripMapper;
 import com.example.TripTrack.repositories.TripRepository;
 import com.example.TripTrack.services.ServiceInterfaces.TripServiceInterface;
+import com.example.TripTrack.services.ServiceInterfaces.UpdateTotalPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,25 +17,30 @@ import java.util.stream.Collectors;
 public class TripService implements TripServiceInterface {
     @Autowired
     TripRepository tripRepository;
-
     @Autowired
     AccommodationService accommodationService;
-
     @Autowired
     TransportationService transportationService;
-
     @Autowired
     ItineraryService itineraryService;
+    @Autowired
+    UpdateTotalPrice updateTotalPrice;
+
 
     @Override
     public TripDTO save(Trip trip) {
-//        return TripMapper.toDto(tripRepository.save(trip));
+        tripRepository.save(trip);
+        updateTotalPrice.updateTotalPrice(trip.getId());
         return new TripDTO(tripRepository.save(trip));
     }
 
+    @Override
     public <T extends BaseTripDto> TripDTO save(T dto)
     {
-        return new TripDTO(tripRepository.save(new Trip(dto)));
+        Trip trip = new Trip(dto);
+        tripRepository.save(trip);
+        updateTotalPrice.updateTotalPrice(trip.getId());
+        return new TripDTO(tripRepository.save(trip));
     }
 
 
@@ -82,6 +88,7 @@ public class TripService implements TripServiceInterface {
     @Override
     public void deleteById(UUID id) {
         tripRepository.deleteById(id);
+        updateTotalPrice.updateTotalPrice(id);
     }
 
     @Override
@@ -128,11 +135,10 @@ public class TripService implements TripServiceInterface {
     public TripDTO update(TripDTO tripDTO, UUID id) {
 
         Trip tripToUpdate = getById(id);
-        return new TripDTO(tripRepository.save(TripMapper.updateEntityFromDto(tripDTO,tripToUpdate)));
+        tripRepository.save(TripMapper.updateEntityFromDto(tripDTO,tripToUpdate));
+        updateTotalPrice.updateTotalPrice(id);
+        return new TripDTO(tripToUpdate);
     }
-
-//https://chatgpt.com/share/68d93c80-0d9c-8001-936f-748a4a641020
-
 }
 
 

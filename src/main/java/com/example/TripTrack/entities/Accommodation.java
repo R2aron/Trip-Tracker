@@ -19,12 +19,11 @@ public class Accommodation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     private String name;
     private String location;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
-    private Float price;
+    private Double price;
     private String address;
 
     @ManyToOne

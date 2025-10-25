@@ -23,4 +23,5 @@ public interface TripServiceInterface {
     public List<AccommodationDTO> getAllAccommodationDto(UUID id);
     public List<ItineraryDTO> getAllItineraryDto(UUID id);
     public List<TransportationDTO> getAllTransportationDto(UUID id);
+    public <T extends BaseTripDto> TripDTO save(T dto);
 }

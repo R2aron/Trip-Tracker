@@ -6,9 +6,6 @@ import com.example.TripTrack.entities.ItineraryItem;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//de vazut daca trebuie facuta entity sau service
-//de testat cu @Mapper, pana atunci o fac clasa utilitara cu metode stattice.
-
 public class  ItineraryItemMapper {
 
     // de facut metoda care transforma 1 la 1 si metoda care transforma * la *
@@ -45,6 +42,7 @@ public class  ItineraryItemMapper {
         entityToUpdate.setPrice(itineraryDTO.getPrice());
         entityToUpdate.setDate(itineraryDTO.getDate());
         entityToUpdate.setPrice(itineraryDTO.getPrice());
+
         return entityToUpdate;
     }
 }

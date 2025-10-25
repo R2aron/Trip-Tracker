@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AccommodationServiceInterface {
-    public List<AccommodationDTO> findAllByParentId(UUID tripId);
+    public List<Accommodation> findAllByParentId(UUID tripId);
     public AccommodationDTO getById(UUID id);
     public Accommodation findById(UUID id);
     public AccommodationDTO save(UUID tripId,AccommodationDTO accommodationDTO);

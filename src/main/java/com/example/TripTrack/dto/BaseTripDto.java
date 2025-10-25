@@ -29,6 +29,8 @@ public class BaseTripDto {
     @NotNull
     @FutureOrPresent(message = "Start of trip cannot be in past")
     private LocalDateTime startOfTrip;
+    @NotNull
+    private Double totalPrice;
 
     public BaseTripDto(Trip trip)
     {
@@ -37,5 +39,6 @@ public class BaseTripDto {
         this.destination = trip.getDestination();
         this.days = trip.getDays();
         this.startOfTrip = trip.getStartOfTrip();
+        this.totalPrice = trip.getTotalPrice();
     }
 }

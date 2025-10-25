@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AccommodationRepository extends JpaRepository<Accommodation, UUID> {
-    List<Accommodation> findByParentId(UUID tripId);
+    List<Accommodation> findAllByParentId(UUID tripId);
 }

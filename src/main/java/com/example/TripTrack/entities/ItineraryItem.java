@@ -24,7 +24,7 @@ public class ItineraryItem {
     private LocalDate date;
     private LocalTime time;
     private String location;
-    private Float price;
+    private Double price;
     private Boolean isVisited = false;
 
     @ManyToOne

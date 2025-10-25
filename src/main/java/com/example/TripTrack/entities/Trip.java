@@ -32,6 +32,7 @@ public class Trip {
     private String destination;
     private Integer days;
     private LocalDateTime startOfTrip;
+    private Double totalPrice = 0d;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<ItineraryItem> itineraryItems;
@@ -60,6 +61,7 @@ public class Trip {
         this.destination = dto.getDestination();
         this.days = dto.getDays();
         this.startOfTrip = dto.getStartOfTrip();
+        this.totalPrice = dto.getTotalPrice();
 
 
         if(dto instanceof TripDTO tripDTO) {

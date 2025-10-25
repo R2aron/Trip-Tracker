@@ -17,20 +17,18 @@ public class Transportation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     private com.example.TripTrack.enums.TransportationTypes category;
     private String route;
     private Float distance;
-    private  Float price;
+    private  Double price;
 
     @ManyToOne
     @JoinColumn(name = "trip_id")
     private Trip parent;
 
     public Transportation(TransportationDTO dto) {
-        this.id = dto.getId();
         this.category = dto.getCategory();
         this.route = dto.getRoute();
         this.distance = dto.getDistance();

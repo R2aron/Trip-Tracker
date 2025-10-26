@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TripServiceInterface {
-
     public List<TripDTO> findAll();
     public List<Trip> getAll();
     public TripDTO findById(UUID id);
@@ -23,5 +22,5 @@ public interface TripServiceInterface {
     public List<AccommodationDTO> getAllAccommodationDto(UUID id);
     public List<ItineraryDTO> getAllItineraryDto(UUID id);
     public List<TransportationDTO> getAllTransportationDto(UUID id);
-    public <T extends BaseTripDto> TripDTO save(T dto);
+    public <T extends BaseTripDTO> TripDTO save(UUID userId, T dto);
 }

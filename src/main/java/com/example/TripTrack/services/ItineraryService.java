@@ -82,7 +82,7 @@ public class ItineraryService implements ItineraryServiceInterface {
     {
         ItineraryItem itineraryToUpdate = findById(id);
         itineraryRepository.save(ItineraryItemMapper.updateEntityFromDto(itineraryDTO,itineraryToUpdate));
-        updateTotalPrice.updateTotalPrice(id);
+        updateTotalPrice.updateTotalPrice(itineraryToUpdate.getParent().getId());
         return new ItineraryDTO(itineraryToUpdate);
     }
 }

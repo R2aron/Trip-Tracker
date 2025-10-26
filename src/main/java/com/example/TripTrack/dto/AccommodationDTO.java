@@ -38,6 +38,7 @@ public class AccommodationDTO {
     //CheckIn<CheckOut
 
     public AccommodationDTO(Accommodation accommodation) {
+        this.id = accommodation.getId();
         this.name = accommodation.getName();
         this.location = accommodation.getLocation();
         this.checkIn = accommodation.getCheckIn();

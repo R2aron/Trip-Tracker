@@ -78,7 +78,7 @@ public class TransportationService implements TransportationServiceInterface {
     {
         Transportation entityToUpdate = findById(id);
         transportationRepository.save(TransportationMapper.updateEntityFromDto(transportationDTO,entityToUpdate));
-        updateTotalPrice.updateTotalPrice(id);
+        updateTotalPrice.updateTotalPrice(entityToUpdate.getParent().getId());
         return new TransportationDTO(entityToUpdate);
     }
 

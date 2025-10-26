@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-public class BaseTripDto {
+public class BaseTripDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private UUID id;
@@ -32,7 +32,7 @@ public class BaseTripDto {
     @NotNull
     private Double totalPrice;
 
-    public BaseTripDto(Trip trip)
+    public BaseTripDTO(Trip trip)
     {
         this.id = trip.getId();
         this.name = trip.getName();

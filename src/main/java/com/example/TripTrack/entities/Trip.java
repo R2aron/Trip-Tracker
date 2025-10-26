@@ -1,6 +1,6 @@
 package com.example.TripTrack.entities;
 
-import com.example.TripTrack.dto.BaseTripDto;
+import com.example.TripTrack.dto.BaseTripDTO;
 import com.example.TripTrack.dto.TripDTO;
 import com.example.TripTrack.mappers.AccommodationMapper;
 import com.example.TripTrack.mappers.ItineraryItemMapper;
@@ -11,9 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -34,28 +33,22 @@ public class Trip {
     private LocalDateTime startOfTrip;
     private Double totalPrice = 0d;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItineraryItem> itineraryItems;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private  List<Accommodation> accommodations;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transportation> transportation;
 
-//    @ManyToMany(mappedBy = "trips", fetch = FetchType.LAZY)
-//    private Set<User> users = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "trips_users",
-            joinColumns = @JoinColumn(name = "trip_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> users = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id",nullable = false)
+    private User user;
 
 
-    public <T extends BaseTripDto> Trip(T dto) {
+
+    public <T extends BaseTripDTO> Trip(T dto) {
         this.id = dto.getId();
         this.name = dto.getName();
         this.destination = dto.getDestination();
@@ -72,7 +65,7 @@ public class Trip {
             }
 
             if (tripDTO.getAccommodationDTOS() != null && !tripDTO.getAccommodationDTOS().isEmpty()) {
-                List<Accommodation> accommodationList = AccommodationMapper.accomodationListFromDtos(tripDTO.getAccommodationDTOS());
+                List<Accommodation> accommodationList = AccommodationMapper.accomodationListFromDtos(tripDTO.getAccommodationDTOS(),false);
                 this.setAccommodations(accommodationList);
                 this.getAccommodations().forEach(accommodation -> accommodation.setParent(this));
 

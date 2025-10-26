@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class TripDTO extends BaseTripDto{
+public class TripDTO extends BaseTripDTO {
 
 //    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 //    @Schema(accessMode = Schema.AccessMode.READ_ONLY)

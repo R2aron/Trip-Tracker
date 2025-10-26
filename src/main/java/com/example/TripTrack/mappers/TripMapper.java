@@ -7,6 +7,7 @@ import com.example.TripTrack.entities.Transportation;
 import com.example.TripTrack.entities.Trip;
 import com.example.TripTrack.services.ServiceInterfaces.TripServiceInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class TripMapper {
 
         if(dto.getAccommodationDTOS() != null && !dto.getAccommodationDTOS().isEmpty())
         {
-            List<Accommodation> accommodationList = AccommodationMapper.accomodationListFromDtos(dto.getAccommodationDTOS());
+            List<Accommodation> accommodationList = AccommodationMapper.accomodationListFromDtos(dto.getAccommodationDTOS(), false);
             trip.setAccommodations(accommodationList);
             trip.getAccommodations().forEach(accommodation -> accommodation.setParent(trip));
 
@@ -96,6 +97,7 @@ public class TripMapper {
         return tripList;
     }
 
+
     public static Trip updateEntityFromDto(TripDTO tripDTO,Trip entityToUpdate) {
 
         entityToUpdate.setName(tripDTO.getName());
@@ -105,17 +107,29 @@ public class TripMapper {
 
         if(tripDTO.getItineraryDTOS() != null)
         {
-            entityToUpdate.setItineraryItems(ItineraryItemMapper.itineraryListFromDtos(tripDTO.getItineraryDTOS()));
+            List<ItineraryItem> itineraryItems = entityToUpdate.getItineraryItems();
+            itineraryItems.removeAll(itineraryItems);
+            List<ItineraryItem> newList = ItineraryItemMapper.itineraryListFromDtos(tripDTO.getItineraryDTOS());
+            itineraryItems.addAll(newList);
+            entityToUpdate.setItineraryItems(itineraryItems);
             entityToUpdate.getItineraryItems().forEach(itineraryItem -> itineraryItem.setParent(entityToUpdate));
         }
         if(tripDTO.getAccommodationDTOS() != null)
         {
-            entityToUpdate.setAccommodations(AccommodationMapper.accomodationListFromDtos(tripDTO.getAccommodationDTOS()));
+            List<Accommodation> accommodations = entityToUpdate.getAccommodations();
+            accommodations.removeAll(accommodations);
+            List<Accommodation> newList =AccommodationMapper.accomodationListFromDtos(tripDTO.getAccommodationDTOS(),true);
+            accommodations.addAll(newList);
+            entityToUpdate.setAccommodations(accommodations);
             entityToUpdate.getAccommodations().forEach(accommodation -> accommodation.setParent(entityToUpdate));
         }
         if(tripDTO.getTransportationDTOS() != null)
         {
-            entityToUpdate.setTransportation(TransportationMapper.transportationListFromDtos(tripDTO.getTransportationDTOS()));
+            List<Transportation> transportationList = entityToUpdate.getTransportation();
+            transportationList.removeAll(transportationList);
+            List<Transportation> newList = TransportationMapper.transportationListFromDtos(tripDTO.getTransportationDTOS());
+            transportationList.addAll(newList);
+            entityToUpdate.setTransportation(transportationList);
             entityToUpdate.getTransportation().forEach(transportation -> transportation.setParent(entityToUpdate));
         }
         return entityToUpdate;

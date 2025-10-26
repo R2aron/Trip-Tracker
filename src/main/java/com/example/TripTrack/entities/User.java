@@ -1,5 +1,6 @@
 package com.example.TripTrack.entities;
 
+import com.example.TripTrack.dto.UserDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,8 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -25,17 +25,24 @@ public class User {
     private String firstName;
     private String lastName;
     private Integer age;
-    private String CNP;
+    private String nickName;
 
-    @Email(message = "Format de email invalid")
-    @NotBlank(message = "Emailul este obligatoriu")
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
     @Column(nullable = false, unique = true)
     private String email;
 
-    //password;
-    private String nickName;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Trip> trips;
 
-//    @ManyToMany(mappedBy = "users")
-//    private Set<Trip> trips = new HashSet<>();
+    public User(UserDTO dto)
+    {
+        this.id = dto.getId();
+        this.firstName = dto.getFirstName();
+        this.lastName = dto.getLastName();
+        this.age = dto.getAge();
+        this.email = dto.getEmail();
+        this.nickName = dto.getNickName();
+    }
 
 }

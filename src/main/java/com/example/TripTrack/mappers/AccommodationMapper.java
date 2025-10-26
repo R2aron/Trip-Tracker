@@ -2,11 +2,14 @@ package com.example.TripTrack.mappers;
 
 import com.example.TripTrack.dto.AccommodationDTO;
 import com.example.TripTrack.entities.Accommodation;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class AccommodationMapper {
+
 
     public static List<AccommodationDTO> toDtoList(List<Accommodation> accommodationList)
     {
@@ -21,19 +24,17 @@ public class AccommodationMapper {
         return accommodationDTOList;
     }
 
-    public static List<Accommodation> accomodationListFromDtos(List<AccommodationDTO> dtoList)
+    public static List<Accommodation> accomodationListFromDtos(List<AccommodationDTO> dtoList, Boolean isUpdate)
     {
         if(dtoList == null || dtoList.isEmpty())
             return List.of();
-        List<Accommodation> accommodationList = dtoList.stream()
+        return dtoList.stream()
                 .map(accom -> {
                     Accommodation accommodation = new Accommodation(accom);
-                    return accommodation;
+                        return accommodation;
                 }).collect(Collectors.toList());
-        return accommodationList;
     }
 
-    //de facut verificari in service pentru chechIn
     public static Accommodation updateEntityFromDto(AccommodationDTO accommodationDTO ,Accommodation entityToUpdate)
     {
         entityToUpdate.setAddress(accommodationDTO.getAddress());

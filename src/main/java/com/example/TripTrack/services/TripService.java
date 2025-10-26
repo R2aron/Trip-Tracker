@@ -1,9 +1,13 @@
 package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.*;
-import com.example.TripTrack.entities.Trip;
+import com.example.TripTrack.entities.*;
+import com.example.TripTrack.mappers.AccommodationMapper;
+import com.example.TripTrack.mappers.ItineraryItemMapper;
+import com.example.TripTrack.mappers.TransportationMapper;
 import com.example.TripTrack.mappers.TripMapper;
 import com.example.TripTrack.repositories.TripRepository;
+import com.example.TripTrack.repositories.UserRepository;
 import com.example.TripTrack.services.ServiceInterfaces.TripServiceInterface;
 import com.example.TripTrack.services.ServiceInterfaces.UpdateTotalPrice;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,22 +29,28 @@ public class TripService implements TripServiceInterface {
     ItineraryService itineraryService;
     @Autowired
     UpdateTotalPrice updateTotalPrice;
+    @Autowired
+    UserRepository userRepository;
 
 
     @Override
     public TripDTO save(Trip trip) {
-        tripRepository.save(trip);
-        updateTotalPrice.updateTotalPrice(trip.getId());
-        return new TripDTO(tripRepository.save(trip));
+        Trip tripSaved = tripRepository.save(trip);
+        updateTotalPrice.updateTotalPrice(tripSaved.getId());
+        return new TripDTO(tripSaved);
     }
 
     @Override
-    public <T extends BaseTripDto> TripDTO save(T dto)
+    public <T extends BaseTripDTO> TripDTO save(UUID userID, T dto)
     {
+        User user = userRepository.findById(userID)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Trip trip = new Trip(dto);
-        tripRepository.save(trip);
-        updateTotalPrice.updateTotalPrice(trip.getId());
-        return new TripDTO(tripRepository.save(trip));
+        trip.setUser(user);
+        Trip tripSaved = tripRepository.save(trip);
+//        tripRepository.save(trip);
+        updateTotalPrice.updateTotalPrice(tripSaved.getId());
+        return new TripDTO(tripSaved);
     }
 
 
@@ -139,6 +149,7 @@ public class TripService implements TripServiceInterface {
         updateTotalPrice.updateTotalPrice(id);
         return new TripDTO(tripToUpdate);
     }
+
 }
 
 

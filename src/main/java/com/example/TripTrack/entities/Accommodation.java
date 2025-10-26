@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Accommodations")
+@Table(name = "accommodations")
 public class Accommodation {
 
     @Id
@@ -37,5 +37,6 @@ public class Accommodation {
         this.checkOut = dto.getCheckOut();
         this.price = dto.getPrice();
         this.address = dto.getAddress();
+        this.id=dto.getId();
     }
 }

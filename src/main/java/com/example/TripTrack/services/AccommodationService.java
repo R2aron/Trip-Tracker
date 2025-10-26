@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AccommodationService implements AccommodationServiceInterface {
@@ -73,7 +74,7 @@ public class AccommodationService implements AccommodationServiceInterface {
     {
         Accommodation accommodationToUpdate = findById(id);
         accommodationRepository.save(AccommodationMapper.updateEntityFromDto(accommodationDTO,accommodationToUpdate));
-        updateTotalPrice.updateTotalPrice(id);
+        updateTotalPrice.updateTotalPrice(accommodationToUpdate.getParent().getId());
         return new AccommodationDTO(accommodationToUpdate);
     }
 
@@ -82,4 +83,6 @@ public class AccommodationService implements AccommodationServiceInterface {
     {
         return AccommodationMapper.toDtoList(accommodationList);
     }
+
+
 }

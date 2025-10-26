@@ -1,7 +1,6 @@
 package com.example.TripTrack.controllers;
 
 import com.example.TripTrack.dto.*;
-import com.example.TripTrack.entities.Trip;
 import com.example.TripTrack.services.ServiceInterfaces.AccommodationServiceInterface;
 import com.example.TripTrack.services.ServiceInterfaces.ItineraryServiceInterface;
 import com.example.TripTrack.services.ServiceInterfaces.TransportationServiceInterface;
@@ -30,16 +29,16 @@ public class TripController {
 
 //     ====Trip====
 
-    @PostMapping("/createFullTrip")
-    public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
+    @PostMapping("/users/{userId}/createFullTrip")
+    public ResponseEntity<TripDTO> createTrip(@PathVariable UUID userId, @Valid @RequestBody TripDTO dto)
     {
-        return ResponseEntity.ok(tripService.save(dto));
+        return ResponseEntity.ok(tripService.save(userId,dto));
     }
 
-    @PostMapping("/createBaseTrip")
-    public ResponseEntity<TripDTO> createLightTrip(@Valid @RequestBody BaseTripDto dto)
+    @PostMapping("/users/{userId}/createBaseTrip")
+    public ResponseEntity<TripDTO> createLightTrip(@PathVariable UUID userId, @Valid @RequestBody BaseTripDTO dto)
     {
-        return ResponseEntity.ok(tripService.save(new Trip(dto)));
+        return ResponseEntity.ok(tripService.save(userId,dto));
     }
 
     @GetMapping

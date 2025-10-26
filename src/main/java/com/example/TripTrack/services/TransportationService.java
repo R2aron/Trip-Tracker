@@ -61,8 +61,10 @@ public class TransportationService implements TransportationServiceInterface {
     @Override
     public void deleteById(UUID id)
     {
+        UUID tripId = findById(id).getParent().getId();
         transportationRepository.deleteById(id);
-        updateTotalPrice.updateTotalPrice(id);
+        updateTotalPrice.updateTotalPrice(tripId);
+
     }
 
     @Override

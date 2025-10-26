@@ -66,8 +66,9 @@ public class ItineraryService implements ItineraryServiceInterface {
     @Override
     public void deleteById(UUID id)
     {
+        UUID tripId = findById(id).getParent().getId();
         itineraryRepository.deleteById(id);
-        updateTotalPrice.updateTotalPrice(id);
+        updateTotalPrice.updateTotalPrice(tripId);
     }
 
     @Override

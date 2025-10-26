@@ -88,7 +88,7 @@ public class TripService implements TripServiceInterface {
     @Override
     public void deleteById(UUID id) {
         tripRepository.deleteById(id);
-        updateTotalPrice.updateTotalPrice(id);
+//        updateTotalPrice.updateTotalPrice(id);
     }
 
     @Override

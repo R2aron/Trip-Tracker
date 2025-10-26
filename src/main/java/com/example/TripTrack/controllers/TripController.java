@@ -27,19 +27,16 @@ public class TripController {
     @Autowired
     TransportationServiceInterface transportationService;
 
-//    @PostMapping
-//    public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
-//    {
-//        return ResponseEntity.ok(tripService.save(new Trip(dto)));
-//    }
 
-    @PostMapping("/Full")
+//     ====Trip====
+
+    @PostMapping("/createFullTrip")
     public ResponseEntity<TripDTO> createTrip(@Valid @RequestBody TripDTO dto)
     {
         return ResponseEntity.ok(tripService.save(dto));
     }
 
-    @PostMapping("/Base")
+    @PostMapping("/createBaseTrip")
     public ResponseEntity<TripDTO> createLightTrip(@Valid @RequestBody BaseTripDto dto)
     {
         return ResponseEntity.ok(tripService.save(new Trip(dto)));
@@ -80,6 +77,22 @@ public class TripController {
         return ResponseEntity.ok(tripService.findByDestination(destination));
     }
 
+    @PutMapping("/{id}/updateTrip")
+    public ResponseEntity<TripDTO> updateTrip(@RequestBody @Valid  TripDTO dto, @PathVariable UUID id)
+    {
+        return ResponseEntity.ok(tripService.update(dto,id));
+    }
+
+
+    @DeleteMapping("/{id}/deleteTrip")
+    public ResponseEntity<Void> deleteTrip(@PathVariable UUID id)
+    {
+        tripService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+//    ===========================
+
 
 //    ====ACCOMMODATION====
 
@@ -108,27 +121,22 @@ public class TripController {
         return ResponseEntity.noContent().build();
     }
 
-//    =================
+//    ===========================
 
+
+
+//     ====ITINERARY====
+
+    @PostMapping("/{id}/createItineraryItem")
+    ResponseEntity<ItineraryDTO>  createItinerary(@PathVariable UUID id, @Valid @RequestBody ItineraryDTO itineraryDTO)
+    {
+        return ResponseEntity.ok(itineraryService.save(id, itineraryDTO));
+    }
 
     @GetMapping("/{id}/itinerary")
     public ResponseEntity<List<ItineraryDTO>> getItinerary(@PathVariable UUID id)
     {
         return ResponseEntity.ok(tripService.getAllItineraryDto(id));
-    }
-
-    @GetMapping("/{id}/transportation")
-    public ResponseEntity<List<TransportationDTO>> getTransportation(@PathVariable UUID id)
-    {
-        return ResponseEntity.ok(tripService.getAllTransportationDto(id));
-    }
-
-
-
-    @PutMapping("/{id}/updateTransportation")
-    public ResponseEntity<TransportationDTO> updateTransportation(@RequestBody @Valid TransportationDTO dto, @PathVariable UUID id)
-    {
-        return ResponseEntity.ok(transportationService.update(dto,id));
     }
 
     @PutMapping("/{id}/updateItinerary")
@@ -137,18 +145,44 @@ public class TripController {
         return ResponseEntity.ok(itineraryService.update(dto,id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TripDTO> updateTrip(@RequestBody @Valid  TripDTO dto, @PathVariable UUID id)
+    @DeleteMapping("/{id}/deleteItinerary")
+    public ResponseEntity<Void> deleteItinerary(@PathVariable UUID id)
     {
-        return ResponseEntity.ok(tripService.update(dto,id));
+        itineraryService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTrip(@PathVariable UUID id)
+
+//    ===========================
+
+
+//     ====Transportation====
+
+    @PostMapping("/{id}/createTransportation")
+    ResponseEntity<TransportationDTO>  createTransportation(@PathVariable UUID id, @Valid @RequestBody TransportationDTO transportationDTO)
     {
-        tripService.deleteById(id);
-       return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(transportationService.save(id, transportationDTO));
     }
 
+    @GetMapping("/{id}/transportation")
+    public ResponseEntity<List<TransportationDTO>> getTransportation(@PathVariable UUID id)
+    {
+        return ResponseEntity.ok(tripService.getAllTransportationDto(id));
+    }
+
+    @PutMapping("/{id}/updateTransportation")
+    public ResponseEntity<TransportationDTO> updateTransportation(@RequestBody @Valid TransportationDTO dto, @PathVariable UUID id)
+    {
+        return ResponseEntity.ok(transportationService.update(dto,id));
+    }
+
+    @DeleteMapping("/{id}/deleteTransportation")
+    public ResponseEntity<Void> deleteTransportation(@PathVariable UUID id)
+    {
+        transportationService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+//    ===========================
 }

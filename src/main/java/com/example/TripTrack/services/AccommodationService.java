@@ -62,8 +62,9 @@ public class AccommodationService implements AccommodationServiceInterface {
     @Override
     public void deleteById(UUID id)
     {
+        UUID tripId = findById(id).getParent().getId();
         accommodationRepository.deleteById(id);
-        updateTotalPrice.updateTotalPrice(id);
+        updateTotalPrice.updateTotalPrice(tripId);
     }
 
 

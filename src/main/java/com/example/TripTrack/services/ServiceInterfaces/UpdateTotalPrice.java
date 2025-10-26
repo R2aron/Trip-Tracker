@@ -31,7 +31,7 @@ public class UpdateTotalPrice {
 
         Double totalPrice = 0D;
 
-        totalPrice += trip.getTotalPrice();
+//        totalPrice += trip.getTotalPrice();
 
         List<Accommodation> accommodationList = accommodationRepository.findAllByParentId(tripId);
         if(accommodationList!= null)

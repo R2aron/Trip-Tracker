@@ -2,9 +2,6 @@ package com.example.TripTrack.services;
 
 import com.example.TripTrack.dto.*;
 import com.example.TripTrack.entities.*;
-import com.example.TripTrack.mappers.AccommodationMapper;
-import com.example.TripTrack.mappers.ItineraryItemMapper;
-import com.example.TripTrack.mappers.TransportationMapper;
 import com.example.TripTrack.mappers.TripMapper;
 import com.example.TripTrack.repositories.TripRepository;
 import com.example.TripTrack.repositories.UserRepository;

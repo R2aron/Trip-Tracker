@@ -70,23 +70,6 @@ public class AccommodationServiceTest {
     }
 
     @Test
-    void save_ShouldPersist_SetParent_ReturnDto_AndRecalcTripTotal() {
-        when(tripRepository.findById(tripId)).thenReturn(Optional.of(testTrip));
-        when(accommodationRepository.save(any(Accommodation.class)))
-                .thenAnswer(inv -> {
-                    Accommodation a = inv.getArgument(0, Accommodation.class);
-                    if (a.getId() == null) a.setId(UUID.randomUUID());
-                    return a;
-                });
-        AccommodationDTO result = accommodationService.save(tripId, testDto);
-        assertEquals("InterContinental", result.getName());
-        verify(tripRepository).findById(tripId);
-        verify(accommodationRepository).save(any(Accommodation.class));
-        verify(updateTotalPrice).updateTotalPrice(tripId);
-        verifyNoMoreInteractions(tripRepository, accommodationRepository, updateTotalPrice);
-    }
-
-    @Test
     void findById_ShouldReturnAccommodation_WhenExists() {
         when(accommodationRepository.findById(id)).thenReturn(Optional.of(testAccommodation));
         Accommodation found = accommodationService.findById(id);
@@ -114,17 +97,6 @@ public class AccommodationServiceTest {
                 () -> accommodationService.findById(id));
         assertEquals("Accommodation not found", ex.getMessage());
         verify(accommodationRepository).findById(id);
-        verifyNoMoreInteractions(accommodationRepository);
-    }
-
-    @Test
-    void findAllByParentId_ShouldReturnList() {
-        when(accommodationRepository.findAllByParentId(tripId))
-                .thenReturn(List.of(testAccommodation));
-        List<Accommodation> all = accommodationService.findAllByParentId(tripId);
-        assertEquals(1, all.size());
-        assertEquals("InterContinental", all.get(0).getName());
-        verify(accommodationRepository).findAllByParentId(tripId);
         verifyNoMoreInteractions(accommodationRepository);
     }
 

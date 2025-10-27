@@ -42,7 +42,7 @@ public class  ItineraryItemMapper {
         entityToUpdate.setPrice(itineraryDTO.getPrice());
         entityToUpdate.setDate(itineraryDTO.getDate());
         entityToUpdate.setPrice(itineraryDTO.getPrice());
-
+        entityToUpdate.setIsVisited(itineraryDTO.getIsVisited());
         return entityToUpdate;
     }
 }

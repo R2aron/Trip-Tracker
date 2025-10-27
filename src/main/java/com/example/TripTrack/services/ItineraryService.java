@@ -51,8 +51,7 @@ public class ItineraryService implements ItineraryServiceInterface {
     @Override
     public ItineraryDTO getById(UUID id)
     {
-        return new ItineraryDTO(itineraryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Itinerary not found")));
+        return new ItineraryDTO(findById(id));
     }
 
     @Override

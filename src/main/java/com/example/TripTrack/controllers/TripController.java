@@ -113,6 +113,12 @@ public class TripController {
         return ResponseEntity.ok(tripService.getAllAccommodationDto(id));
     }
 
+    @GetMapping("/{id}/getAccommodationById")
+    public ResponseEntity<AccommodationDTO> getAccommodationById(@PathVariable UUID id)
+    {
+        return ResponseEntity.ok((accommodationService.getById(id)));
+    }
+
     @PutMapping("/{id}/updateAccommodation")
     public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody @Valid AccommodationDTO dto, @PathVariable UUID id)
     {
@@ -142,6 +148,12 @@ public class TripController {
     public ResponseEntity<List<ItineraryDTO>> getItinerary(@PathVariable UUID id)
     {
         return ResponseEntity.ok(tripService.getAllItineraryDto(id));
+    }
+
+    @GetMapping("/{id}/getItineraryById")
+    public ResponseEntity<ItineraryDTO> getItineraryById(@PathVariable UUID id)
+    {
+        return ResponseEntity.ok((itineraryService.getById(id)));
     }
 
     @PutMapping("/{id}/updateItinerary")
@@ -174,6 +186,12 @@ public class TripController {
     public ResponseEntity<List<TransportationDTO>> getTransportation(@PathVariable UUID id)
     {
         return ResponseEntity.ok(tripService.getAllTransportationDto(id));
+    }
+
+    @GetMapping("/{id}/getTransportationById")
+    public ResponseEntity<TransportationDTO> getTransportationById(@PathVariable UUID id)
+    {
+        return ResponseEntity.ok((transportationService.getById(id)));
     }
 
     @PutMapping("/{id}/updateTransportation")

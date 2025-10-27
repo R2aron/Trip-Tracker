@@ -24,7 +24,7 @@ public class ItineraryDTO {
     @FutureOrPresent
     private LocalDate date;
     @NotNull
-    @FutureOrPresent
+//    @FutureOrPresent
     private LocalTime time;
     @NotEmpty
     private String location;

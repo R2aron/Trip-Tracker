@@ -45,8 +45,7 @@ public class TransportationService implements TransportationServiceInterface {
     @Override
     public TransportationDTO getById(UUID id)
     {
-        return new TransportationDTO(transportationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transportation not found")));
+        return new TransportationDTO(findById(id));
     }
 
     @Override

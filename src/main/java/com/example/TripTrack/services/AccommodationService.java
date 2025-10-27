@@ -48,8 +48,7 @@ public class AccommodationService implements AccommodationServiceInterface {
     @Override
     public AccommodationDTO getById(UUID id)
     {
-        return new AccommodationDTO(accommodationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Accommodation not found")));
+        return new AccommodationDTO(findById(id));
     }
 
     @Override

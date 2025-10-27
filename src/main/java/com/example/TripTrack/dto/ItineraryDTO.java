@@ -30,7 +30,6 @@ public class ItineraryDTO {
     private String location;
     @NotNull
     private Double price;
-    @NotNull
     private Boolean isVisited;
 
     public ItineraryDTO(ItineraryItem itineraryItem)
@@ -40,5 +39,6 @@ public class ItineraryDTO {
         this.time = itineraryItem.getTime();
         this.location = itineraryItem.getLocation();
         this.price = itineraryItem.getPrice();
+        this.isVisited = itineraryItem.getIsVisited();
     }
 }

@@ -35,6 +35,7 @@ public class TransportationDTO {
         this.route = transportation.getRoute();
         this.distance = transportation.getDistance();
         this.price = transportation.getPrice();
+        this.category = transportation.getCategory();
     }
 
 }

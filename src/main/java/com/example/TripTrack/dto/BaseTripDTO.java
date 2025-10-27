@@ -29,7 +29,6 @@ public class BaseTripDTO {
     @NotNull
     @FutureOrPresent(message = "Start of trip cannot be in past")
     private LocalDateTime startOfTrip;
-    @NotNull
     private Double totalPrice;
 
     public BaseTripDTO(Trip trip)

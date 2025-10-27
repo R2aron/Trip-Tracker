@@ -37,5 +37,6 @@ public class ItineraryItem {
         this.time = dto.getTime();
         this.location = dto.getLocation();
         this.price = dto.getPrice();
+        this.isVisited = dto.getIsVisited();
     }
 }

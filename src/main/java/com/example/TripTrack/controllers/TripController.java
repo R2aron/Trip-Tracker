@@ -54,9 +54,15 @@ public class TripController {
     }
 
     @GetMapping("/lightResponse/{id}")
-    public ResponseEntity<LightResponseDTO> getTripById(@PathVariable UUID id)
+    public ResponseEntity<LightResponseDTO> getLightTripById(@PathVariable UUID id)
     {
         return ResponseEntity.ok(tripService.findLightResponseDtoById(id));
+    }
+
+    @GetMapping("/FullResponse/{id}")
+    public ResponseEntity<TripDTO> getFullTripById(@PathVariable UUID id)
+    {
+        return ResponseEntity.ok(tripService.findById(id));
     }
 
     @GetMapping("/findTripsXDaysLonger/{days}")
